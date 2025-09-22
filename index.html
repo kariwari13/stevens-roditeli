@@ -263,6 +263,7 @@
             };
 
             const sampleTasks = [
+                // Уход за ребёнком (8 заданий)
                 {
                     type: 'translation_ru_en',
                     category: 'baby_care',
@@ -298,7 +299,7 @@
                 {
                     type: 'listening',
                     category: 'baby_care',
-                    question: 'Прослушайте и повторите',
+                    question: 'Прослушайте и повторите: "Осторожно, она сейчас на тебя рыгнёт"',
                     audio: 'Осторожно, она сейчас на тебя рыгнёт',
                     word: 'рыгать-рыгнуть'
                 },
@@ -326,6 +327,58 @@
                     correct: 1,
                     word: 'колики'
                 },
+
+                // Семья (6 заданий)
+                {
+                    type: 'situational',
+                    category: 'family',
+                    question: 'Ситуация: Гульнара спрашивает, как дела у внучки. Ответь.',
+                    context: 'Ребёнок только что поел и спит.',
+                    expectedElements: ['хорошо', 'поела', 'спит'],
+                    word: 'внучка'
+                },
+                {
+                    type: 'translation_en_ru',
+                    category: 'family',
+                    question: 'Translate: "Our granddaughter"',
+                    answer: 'наша внучка',
+                    alternatives: ['наша внучка'],
+                    word: 'внучка'
+                },
+                {
+                    type: 'fill_blanks',
+                    category: 'family',
+                    question: 'Заполните: "___ играет с ребёнком"',
+                    answer: 'Гульнара',
+                    hint: '(имя свекрови)',
+                    word: 'Гульнара'
+                },
+                {
+                    type: 'multiple_choice',
+                    category: 'family',
+                    question: 'Кто читает сказку? "___ читает сказку"',
+                    options: ['Дедушка', 'Дедушки', 'Дедушке', 'Дедушку'],
+                    correct: 0,
+                    word: 'дедушка'
+                },
+                {
+                    type: 'translation_ru_en',
+                    category: 'family',
+                    question: 'Переведите: "Эрик держит внучку"',
+                    answer: 'erik holds granddaughter',
+                    alternatives: ['erik holds granddaughter', 'erik is holding granddaughter'],
+                    word: 'Эрик'
+                },
+                {
+                    type: 'situational',
+                    category: 'family',
+                    question: 'Ситуация: Эрик спрашивает "Где бабушка?" Ответь.',
+                    context: 'Бабушка качает ребёнка в другой комнате.',
+                    expectedElements: ['другой', 'комнате', 'качает'],
+                    word: 'бабушка'
+                },
+
+                // Действия (7 заданий)
                 {
                     type: 'translation_en_ru',
                     category: 'actions',
@@ -335,20 +388,93 @@
                     word: 'жалеть-пожалеть'
                 },
                 {
+                    type: 'grammar_forms',
+                    category: 'actions',
+                    question: 'Поставьте глагол правильно: "Я ___ (держать) ребёнка"',
+                    answer: 'держу',
+                    alternatives: ['держу'],
+                    word: 'держать-подержать'
+                },
+                {
+                    type: 'fill_blanks',
+                    category: 'actions',
+                    question: 'Заполните: "___ её немного"',
+                    answer: 'покачай',
+                    hint: '(качать ребёнка)',
+                    word: 'качать-покачать'
+                },
+                {
                     type: 'translation_en_ru',
-                    category: 'baby_care',
-                    question: 'Translate: "She wants breast"',
-                    answer: 'она хочет грудь',
-                    alternatives: ['она хочет грудь'],
-                    word: 'грудь'
+                    category: 'actions',
+                    question: 'Translate: "Put her to sleep"',
+                    answer: 'уложи её спать',
+                    alternatives: ['уложи её спать', 'укладывай её спать'],
+                    word: 'укладывать-уложить'
+                },
+                {
+                    type: 'multiple_choice',
+                    category: 'actions',
+                    question: 'Что надо сделать? "Её надо ___"',
+                    options: ['успокаивать', 'успокоить', 'успокойся', 'успокоила'],
+                    correct: 1,
+                    word: 'успокаивать-успокоить'
+                },
+                {
+                    type: 'translation_ru_en',
+                    category: 'actions',
+                    question: 'Переведите: "Она капризничает"',
+                    answer: 'she is being fussy',
+                    alternatives: ['she is being fussy', 'she is fussy'],
+                    word: 'капризничать'
+                },
+                {
+                    type: 'listening',
+                    category: 'actions',
+                    question: 'Прослушайте и повторите: "Она плачет"',
+                    audio: 'Она плачет',
+                    word: 'плакать'
+                },
+
+                // Здоровье (5 заданий)
+                {
+                    type: 'multiple_choice',
+                    category: 'health',
+                    question: 'Что болит? "У неё болит ___"',
+                    options: ['живот', 'живота', 'животу', 'животом'],
+                    correct: 0,
+                    word: 'живот'
+                },
+                {
+                    type: 'translation_en_ru',
+                    category: 'health',
+                    question: 'Translate: "Her stomach hurts"',
+                    answer: 'у неё болит живот',
+                    alternatives: ['у неё болит живот'],
+                    word: 'болеть'
+                },
+                {
+                    type: 'fill_blanks',
+                    category: 'health',
+                    question: 'Заполните: "У неё режутся ___"',
+                    answer: 'зубки',
+                    hint: '(что режется у малышей)',
+                    word: 'зубки'
+                },
+                {
+                    type: 'translation_ru_en',
+                    category: 'health',
+                    question: 'Переведите: "У неё температура"',
+                    answer: 'she has a fever',
+                    alternatives: ['she has a fever', 'she has temperature'],
+                    word: 'температура'
                 },
                 {
                     type: 'situational',
-                    category: 'family',
-                    question: 'Ситуация: Гульнара спрашивает, как дела у внучки. Ответь.',
-                    context: 'Ребёнок только что поел и спит.',
-                    expectedElements: ['хорошо', 'поела', 'спит'],
-                    word: 'внучка'
+                    category: 'health',
+                    question: 'Ситуация: Ребёнок горячий. Что сказать Гульнаре?',
+                    context: 'У ребёнка жар и он вялый.',
+                    expectedElements: ['температура', 'горячий', 'жар'],
+                    word: 'температура'
                 }
             ];
 
@@ -416,32 +542,81 @@
             };
 
             const startRecording = async () => {
+                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                    alert('Ваш браузер не поддерживает распознавание речи. Попробуйте Chrome или Edge.');
+                    return;
+                }
+
                 try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    const mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorderRef.current = mediaRecorder;
-                    audioChunksRef.current = [];
-
-                    mediaRecorder.ondataavailable = (event) => {
-                        audioChunksRef.current.push(event.data);
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    const recognition = new SpeechRecognition();
+                    
+                    recognition.lang = 'ru-RU';
+                    recognition.continuous = false;
+                    recognition.interimResults = false;
+                    recognition.maxAlternatives = 3;
+                    
+                    recognition.onstart = () => {
+                        setIsRecording(true);
+                        setUserAnswer('Говорите...');
                     };
-
-                    mediaRecorder.onstop = () => {
-                        setUserAnswer('Голосовой ответ записан ✓');
+                    
+                    recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript.trim();
+                        console.log('Распознано:', transcript);
+                        setUserAnswer(transcript);
+                        setIsRecording(false);
+                        
+                        // Автоматически проверяем ответ для заданий на аудирование
+                        if (currentTask && currentTask.type === 'listening') {
+                            setTimeout(() => {
+                                checkAnswer();
+                            }, 1000);
+                        }
                     };
-
-                    mediaRecorder.start();
-                    setIsRecording(true);
+                    
+                    recognition.onerror = (event) => {
+                        console.error('Ошибка распознавания:', event.error);
+                        setIsRecording(false);
+                        
+                        let errorMessage = 'Ошибка распознавания речи. ';
+                        switch(event.error) {
+                            case 'no-speech':
+                                errorMessage += 'Речь не обнаружена. Попробуйте говорить громче.';
+                                break;
+                            case 'audio-capture':
+                                errorMessage += 'Микрофон недоступен.';
+                                break;
+                            case 'not-allowed':
+                                errorMessage += 'Доступ к микрофону запрещён. Разрешите доступ в настройках браузера.';
+                                break;
+                            case 'network':
+                                errorMessage += 'Ошибка сети. Проверьте подключение к интернету.';
+                                break;
+                            default:
+                                errorMessage += 'Попробуйте ещё раз.';
+                        }
+                        setUserAnswer(errorMessage);
+                    };
+                    
+                    recognition.onend = () => {
+                        setIsRecording(false);
+                    };
+                    
+                    recognition.start();
+                    
                 } catch (error) {
-                    console.error('Ошибка доступа к микрофону:', error);
+                    console.error('Ошибка запуска распознавания:', error);
+                    setIsRecording(false);
+                    setUserAnswer('Не удалось запустить распознавание речи');
                 }
             };
 
             const stopRecording = () => {
-                if (mediaRecorderRef.current && isRecording) {
-                    mediaRecorderRef.current.stop();
-                    mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
-                    setIsRecording(false);
+                setIsRecording(false);
+                if (window.currentRecognition) {
+                    window.currentRecognition.stop();
+                    window.currentRecognition = null;
                 }
             };
 
