@@ -8,8 +8,12 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
     </style>
 </head>
 <body>
@@ -17,6 +21,7 @@
     
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
+        const { Mic, MicOff, Volume2, RotateCcw, CheckCircle, XCircle, Baby, Users, MessageCircle } = lucide;
 
         const RussianFamilyApp = () => {
             const [currentTask, setCurrentTask] = useState(null);
@@ -26,6 +31,9 @@
             const [isRecording, setIsRecording] = useState(false);
             const [activeTab, setActiveTab] = useState('tasks');
             const [selectedCategory, setSelectedCategory] = useState('all');
+            
+            const mediaRecorderRef = useRef(null);
+            const audioChunksRef = useRef([]);
 
             const vocabulary = {
                 baby_care: {
@@ -33,6 +41,11 @@
                         definition: 'to urinate', 
                         example: 'Она пописала. Нужно поменять памперс. (She peed. Need to change the diaper.)',
                         forms: 'Фразы: "Она хочет писать" (She wants to pee), "Только что пописала" (Just peed)'
+                    },
+                    'какать-покакать': { 
+                        definition: 'to defecate', 
+                        example: 'Она покакала. Памперс грязный. (She pooped. The diaper is dirty.)',
+                        forms: 'Фразы: "Сейчас будет какать" (About to poop), "Уже покакала" (Already pooped)'
                     },
                     'описалась': { 
                         definition: 'she wet herself', 
@@ -59,6 +72,16 @@
                         example: 'Осторожно, она сейчас на тебя рыгнёт (Careful, she will burp on you now)',
                         forms: 'Фразы: "Может рыгнуть" (Might burp), "Сейчас рыгнет" (Will burp now)'
                     },
+                    'салфетка': { 
+                        definition: 'napkin', 
+                        example: 'Возьми салфетку, вытри ей ротик (Take a napkin, wipe her mouth)',
+                        forms: 'Фразы: "Мокрая салфетка" (Wet napkin), "Чистая салфетка" (Clean napkin)'
+                    },
+                    'полотенце': { 
+                        definition: 'towel', 
+                        example: 'Возьми полотенце после купания (Take a towel after bathing)',
+                        forms: 'Фразы: "Мягкое полотенце" (Soft towel), "Сухое полотенце" (Dry towel)'
+                    },
                     'соска': { 
                         definition: 'pacifier', 
                         example: 'Дай ей соску, она успокоится (Give her the pacifier, she will calm down)',
@@ -69,10 +92,60 @@
                         example: 'У неё колики, поэтому плачет (She has colic, that is why she is crying)',
                         forms: 'Фразы: "Сильные колики" (Strong colic), "От коликов плачет" (Crying from colic)'
                     },
+                    'пелёнка': { 
+                        definition: 'diaper cloth', 
+                        example: 'Возьми пелёнку, заверни её (Take a diaper cloth, wrap her)',
+                        forms: 'Фразы: "Чистая пелёнка" (Clean diaper cloth), "Мягкая пелёнка" (Soft diaper cloth)'
+                    },
+                    'люлька': { 
+                        definition: 'cradle', 
+                        example: 'Положи её в люльку, она уснёт (Put her in the cradle, she will fall asleep)',
+                        forms: 'Фразы: "Качается в люльке" (Rocking in the cradle), "Спит в люльке" (Sleeping in the cradle)'
+                    },
+                    'колыбельная': { 
+                        definition: 'lullaby', 
+                        example: 'Спой колыбельную, чтобы она уснула (Sing a lullaby so she falls asleep)',
+                        forms: 'Фразы: "Красивая колыбельная" (Beautiful lullaby), "Тихая колыбельная" (Quiet lullaby)'
+                    },
+                    'сосать-пососать': { 
+                        definition: 'to suck', 
+                        example: 'Она сосёт палец для успокоения (She sucks her finger to calm down)',
+                        forms: 'Фразы: "Сосёт соску" (Sucking pacifier), "Любит сосать" (Likes to suck)'
+                    },
                     'грудь': { 
                         definition: 'breast', 
                         example: 'Она хочет грудь, голодная (She wants breast, she is hungry)',
                         forms: 'Фразы: "Дай грудь" (Give breast), "Просит грудь" (Asking for breast)'
+                    },
+                    'кормить-покормить': { 
+                        definition: 'to feed', 
+                        example: 'Покорми её, она голодная (Feed her, she is hungry)',
+                        forms: 'Фразы: "Время кормить" (Time to feed), "Надо покормить" (Need to feed)'
+                    },
+                    'купать-выкупать': { 
+                        definition: 'to bathe', 
+                        example: 'Надо её выкупать перед сном (Need to bathe her before sleep)',
+                        forms: 'Фразы: "Идём купаться" (Let us go bathe), "Любит купаться" (Likes to bathe)'
+                    },
+                    'ванночка': { 
+                        definition: 'baby bath', 
+                        example: 'Наполни ванночку тёплой водой (Fill the baby bath with warm water)',
+                        forms: 'Фразы: "Детская ванночка" (Baby bath), "Полная ванночка" (Full bath)'
+                    },
+                    'бутылочка': { 
+                        definition: 'bottle', 
+                        example: 'Дай ей бутылочку с молоком (Give her the bottle with milk)',
+                        forms: 'Фразы: "Тёплая бутылочка" (Warm bottle), "Пустая бутылочка" (Empty bottle)'
+                    },
+                    'молоко': { 
+                        definition: 'milk', 
+                        example: 'Приготовь тёплое молоко (Prepare warm milk)',
+                        forms: 'Фразы: "Свежее молоко" (Fresh milk), "Горячее молоко" (Hot milk)'
+                    },
+                    'смесь': { 
+                        definition: 'formula', 
+                        example: 'Разведи смесь правильно (Mix the formula correctly)',
+                        forms: 'Фразы: "Детская смесь" (Baby formula), "Готовая смесь" (Ready formula)'
                     }
                 },
                 family: {
@@ -90,6 +163,16 @@
                         definition: 'father-in-law name', 
                         example: 'Эрик играет с ребёнком (Erik plays with the baby)',
                         forms: 'Фразы: "Эрик держит внучку" (Erik holds granddaughter), "Эрик читает сказку" (Erik reads a fairy tale)'
+                    },
+                    'бабушка': { 
+                        definition: 'grandmother', 
+                        example: 'Бабушка качает малышку (Grandmother rocks the little one)',
+                        forms: 'Фразы: "Добрая бабушка" (Kind grandmother), "Бабушка поёт" (Grandmother sings)'
+                    },
+                    'дедушка': { 
+                        definition: 'grandfather', 
+                        example: 'Дедушка читает сказку (Grandfather reads a fairy tale)',
+                        forms: 'Фразы: "Дедушка играет" (Grandfather plays), "Любимый дедушка" (Beloved grandfather)'
                     }
                 },
                 actions: {
@@ -98,10 +181,30 @@
                         example: 'Я держу ребёнка (I am holding the baby)',
                         forms: 'Фразы: "Держи крепко" (Hold tight), "Подержи её" (Hold her)'
                     },
+                    'качать-покачать': { 
+                        definition: 'to rock', 
+                        example: 'Покачай её (Rock her)',
+                        forms: 'Фразы: "Тихо качать" (Rock quietly), "Качать на руках" (Rock in arms)'
+                    },
+                    'укладывать-уложить': { 
+                        definition: 'to put to bed', 
+                        example: 'Я её уложил спать (I put her to sleep)',
+                        forms: 'Фразы: "Пора укладывать" (Time to put to bed), "Уложить в кроватку" (Put in crib)'
+                    },
+                    'нянчить-понянчить': { 
+                        definition: 'to babysit', 
+                        example: 'Бабушка нянчит внучку (Grandmother babysits granddaughter)',
+                        forms: 'Фразы: "Любит нянчить" (Loves to babysit), "Умеет нянчить" (Knows how to babysit)'
+                    },
                     'жалеть-пожалеть': { 
                         definition: 'to feel sorry for, to comfort', 
                         example: 'Она хочет, чтобы её пожалели (She wants to be comforted)',
                         forms: 'Фразы: "Пожалей её" (Comfort her), "Хочет чтобы пожалели" (Wants to be comforted)'
+                    },
+                    'успокаивать-успокоить': { 
+                        definition: 'to calm down', 
+                        example: 'Её надо успокоить (She needs to be calmed down)',
+                        forms: 'Фразы: "Попробуй успокоить" (Try to calm), "Успокой её" (Calm her down)'
                     },
                     'капризничать': { 
                         definition: 'to be fussy', 
@@ -130,10 +233,25 @@
                         example: 'У неё режутся зубки (Her teeth are coming in)',
                         forms: 'Фразы: "Первые зубки" (First teeth), "Болят зубки" (Teeth hurt)'
                     },
+                    'резаться': { 
+                        definition: 'to cut through (teeth)', 
+                        example: 'У неё режутся зубки (Her teeth are cutting through)',
+                        forms: 'Фразы: "Зубки режутся" (Teeth are cutting), "Болезненно режутся" (Cutting painfully)'
+                    },
                     'температура': { 
                         definition: 'temperature', 
                         example: 'У неё температура (She has a fever)',
                         forms: 'Фразы: "Высокая температура" (High fever), "Мерить температуру" (Take temperature)'
+                    },
+                    'градусник': { 
+                        definition: 'thermometer', 
+                        example: 'Где градусник? (Where is the thermometer?)',
+                        forms: 'Фразы: "Электронный градусник" (Digital thermometer), "Поставь градусник" (Put the thermometer)'
+                    },
+                    'врач': { 
+                        definition: 'doctor', 
+                        example: 'Вызови врача (Call the doctor)',
+                        forms: 'Фразы: "Детский врач" (Pediatrician), "Хороший врач" (Good doctor)'
                     }
                 }
             };
@@ -154,6 +272,14 @@
                     answer: 'she wet herself',
                     alternatives: ['she wet herself', 'she peed herself'],
                     word: 'описалась'
+                },
+                {
+                    type: 'translation_ru_en',
+                    category: 'baby_care',
+                    question: 'Переведите: "Она обкакалась"',
+                    answer: 'she soiled herself',
+                    alternatives: ['she soiled herself', 'she pooped herself'],
+                    word: 'обкакалась'
                 },
                 {
                     type: 'translation_en_ru',
@@ -179,12 +305,123 @@
                     word: 'рыгать-рыгнуть'
                 },
                 {
+                    type: 'fill_blanks',
+                    category: 'baby_care',
+                    question: 'Заполните: "Возьми ___"',
+                    answer: 'салфетку',
+                    hint: '(для вытирания)',
+                    word: 'салфетка'
+                },
+                {
+                    type: 'translation_en_ru',
+                    category: 'baby_care',
+                    question: 'Translate: "Give her the pacifier"',
+                    answer: 'дай ей соску',
+                    alternatives: ['дай ей соску'],
+                    word: 'соска'
+                },
+                {
+                    type: 'multiple_choice',
+                    category: 'baby_care',
+                    question: 'Что у ребёнка? "У неё ___"',
+                    options: ['колика', 'колики', 'коликов', 'колике'],
+                    correct: 1,
+                    word: 'колики'
+                },
+                {
+                    type: 'grammar_forms',
+                    category: 'actions',
+                    question: 'Поставьте в правильную форму: "Я ___ (держать) ребёнка"',
+                    answer: 'держу',
+                    alternatives: ['держу'],
+                    word: 'держать-подержать'
+                },
+                {
+                    type: 'translation_en_ru',
+                    category: 'baby_care',
+                    question: 'Translate: "Put her in the cradle"',
+                    answer: 'положи её в люльку',
+                    alternatives: ['положи её в люльку'],
+                    word: 'люлька'
+                },
+                {
+                    type: 'fill_blanks',
+                    category: 'actions',
+                    question: 'Заполните: "Покачай её ___"',
+                    answer: 'немного',
+                    hint: '(качать ребёнка)',
+                    word: 'качать-покачать'
+                },
+                {
+                    type: 'listening',
+                    category: 'baby_care',
+                    question: 'Прослушайте и повторите',
+                    audio: 'Спой колыбельную',
+                    word: 'колыбельная'
+                },
+                {
+                    type: 'fill_blanks',
+                    category: 'actions',
+                    question: 'Заполните: "Она ___"',
+                    answer: 'капризничает',
+                    hint: '(быть недовольной)',
+                    word: 'капризничать'
+                },
+                {
                     type: 'translation_en_ru',
                     category: 'actions',
                     question: 'Translate: "She wants to be comforted"',
                     answer: 'она хочет чтобы её пожалели',
-                    alternatives: ['она хочет чтобы её пожалели'],
+                    alternatives: ['она хочет чтобы её пожалели', 'ей хочется чтобы её пожалели'],
                     word: 'жалеть-пожалеть'
+                },
+                {
+                    type: 'translation_en_ru',
+                    category: 'baby_care',
+                    question: 'Translate: "She wants breast"',
+                    answer: 'она хочет грудь',
+                    alternatives: ['она хочет грудь'],
+                    word: 'грудь'
+                },
+                {
+                    type: 'fill_blanks',
+                    category: 'family',
+                    question: 'Заполните: "Наша ___"',
+                    answer: 'внучка',
+                    hint: '(дочка сына или дочери)',
+                    word: 'внучка'
+                },
+                {
+                    type: 'multiple_choice',
+                    category: 'baby_care',
+                    question: 'Что делает ребёнок? "Она ___ палец"',
+                    options: ['сосёт', 'сосает', 'сосит', 'сосят'],
+                    correct: 0,
+                    word: 'сосать-пососать'
+                },
+                {
+                    type: 'translation_ru_en',
+                    category: 'actions',
+                    question: 'Переведите: "Она плачет"',
+                    answer: 'she is crying',
+                    alternatives: ['she is crying', 'she cries'],
+                    word: 'плакать'
+                },
+                {
+                    type: 'multiple_choice',
+                    category: 'health',
+                    question: 'Что болит? "У неё болит ___"',
+                    options: ['живот', 'живота', 'животу', 'животом'],
+                    correct: 0,
+                    word: 'живот'
+                },
+                {
+                    type: 'grammar_forms',
+                    category: 'health',
+                    question: 'Поставьте правильно: "У неё ___ зубки"',
+                    answer: 'режутся',
+                    hint: '(резаться)',
+                    word: 'зубки'
                 },
                 {
                     type: 'situational',
@@ -193,6 +430,30 @@
                     context: 'Ребёнок только что поел и спит.',
                     expectedElements: ['хорошо', 'поела', 'спит'],
                     word: 'внучка'
+                },
+                {
+                    type: 'translation_en_ru',
+                    category: 'baby_care',
+                    question: 'Translate: "Feed the baby"',
+                    answer: 'покорми ребёнка',
+                    alternatives: ['покорми ребёнка', 'покорми малышку'],
+                    word: 'кормить-покормить'
+                },
+                {
+                    type: 'translation_en_ru',
+                    category: 'baby_care',
+                    question: 'Translate: "Bathe the baby"',
+                    answer: 'выкупай ребёнка',
+                    alternatives: ['выкупай ребёнка', 'искупай ребёнка'],
+                    word: 'купать-выкупать'
+                },
+                {
+                    type: 'fill_blanks',
+                    category: 'baby_care',
+                    question: 'Заполните: "Наполни ___"',
+                    answer: 'ванночку',
+                    hint: '(для купания)',
+                    word: 'ванночка'
                 }
             ];
 
@@ -219,6 +480,7 @@
                     case 'translation_ru_en':
                     case 'translation_en_ru':
                     case 'fill_blanks':
+                    case 'grammar_forms':
                         const normalizedAnswer = userAnswer.toLowerCase().trim();
                         if (currentTask.alternatives) {
                             isCorrect = currentTask.alternatives.some(alt => 
@@ -258,6 +520,36 @@
                 }
             };
 
+            const startRecording = async () => {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    const mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorderRef.current = mediaRecorder;
+                    audioChunksRef.current = [];
+
+                    mediaRecorder.ondataavailable = (event) => {
+                        audioChunksRef.current.push(event.data);
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        setUserAnswer('Голосовой ответ записан ✓');
+                    };
+
+                    mediaRecorder.start();
+                    setIsRecording(true);
+                } catch (error) {
+                    console.error('Ошибка доступа к микрофону:', error);
+                }
+            };
+
+            const stopRecording = () => {
+                if (mediaRecorderRef.current && isRecording) {
+                    mediaRecorderRef.current.stop();
+                    mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+                    setIsRecording(false);
+                }
+            };
+
             useEffect(() => {
                 generateRandomTask();
             }, [selectedCategory]);
@@ -289,11 +581,24 @@
                             React.createElement('p', {className: 'text-lg font-medium'}, currentTask.question),
                             React.createElement('button', {
                                 onClick: () => speakText(currentTask.audio),
-                                className: 'bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600'
-                            }, '🔊 Прослушать'),
-                            React.createElement('button', {
-                                className: 'bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600'
-                            }, '🎤 Записать ответ')
+                                className: 'flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600'
+                            }, 
+                                React.createElement(Volume2, {size: 20}),
+                                'Прослушать'
+                            ),
+                            React.createElement('div', {className: 'flex items-center gap-2'}, 
+                                React.createElement('button', {
+                                    onClick: isRecording ? stopRecording : startRecording,
+                                    className: `flex items-center gap-2 px-4 py-2 rounded-lg ${
+                                        isRecording 
+                                            ? 'bg-red-500 hover:bg-red-600' 
+                                            : 'bg-blue-500 hover:bg-blue-600'
+                                    } text-white`
+                                }, 
+                                    React.createElement(isRecording ? MicOff : Mic, {size: 20}),
+                                    isRecording ? 'Остановить' : 'Записать ответ'
+                                )
+                            )
                         );
                     
                     case 'situational':
@@ -325,7 +630,20 @@
                                 placeholder: 'Введите ваш ответ...',
                                 className: 'w-full p-3 border border-gray-300 rounded-lg',
                                 onKeyPress: (e) => e.key === 'Enter' && checkAnswer()
-                            })
+                            }),
+                            React.createElement('div', {className: 'flex gap-2'}, 
+                                React.createElement('button', {
+                                    onClick: isRecording ? stopRecording : startRecording,
+                                    className: `flex items-center gap-2 px-4 py-2 rounded-lg ${
+                                        isRecording 
+                                            ? 'bg-red-500 hover:bg-red-600' 
+                                            : 'bg-blue-500 hover:bg-blue-600'
+                                    } text-white`
+                                }, 
+                                    React.createElement(isRecording ? MicOff : Mic, {size: 20}),
+                                    'Голосовой ответ'
+                                )
+                            )
                         );
                 }
             };
@@ -347,7 +665,7 @@
                                             React.createElement('button', {
                                                 onClick: () => speakText(word),
                                                 className: 'text-blue-500 hover:text-blue-700'
-                                            }, '🔊')
+                                            }, React.createElement(Volume2, {size: 20}))
                                         ),
                                         React.createElement('p', {className: 'text-gray-600'}, info.definition),
                                         React.createElement('p', {className: 'text-green-700'}, `"${info.example}"`),
@@ -363,7 +681,8 @@
             return React.createElement('div', {className: 'max-w-4xl mx-auto bg-gray-50 min-h-screen'}, 
                 React.createElement('div', {className: 'bg-blue-600 text-white p-6'}, 
                     React.createElement('h1', {className: 'text-2xl font-bold flex items-center gap-2'}, 
-                        '👶 Подготовка к общению с русскими родственниками'
+                        React.createElement(Baby, {size: 28}),
+                        'Подготовка к общению с русскими родственниками'
                     ),
                     React.createElement('p', {className: 'mt-2 opacity-90'}, 
                         'Готовимся к приезду Гульнары и Эрика из России'
@@ -383,7 +702,10 @@
                                 ? 'border-b-2 border-blue-500 text-blue-600' 
                                 : 'text-gray-600 hover:text-gray-800'
                         }`
-                    }, '📝 Задания'),
+                    }, 
+                        React.createElement(MessageCircle, {className: 'mx-auto mb-1', size: 20}),
+                        'Задания'
+                    ),
                     React.createElement('button', {
                         onClick: () => setActiveTab('vocabulary'),
                         className: `flex-1 p-4 text-center font-medium ${
@@ -391,7 +713,10 @@
                                 ? 'border-b-2 border-blue-500 text-blue-600' 
                                 : 'text-gray-600 hover:text-gray-800'
                         }`
-                    }, '📚 Словарь')
+                    }, 
+                        React.createElement(Users, {className: 'mx-auto mb-1', size: 20}),
+                        'Словарь'
+                    )
                 ),
 
                 React.createElement('div', {className: 'p-6'}, 
@@ -447,8 +772,8 @@
                                         : 'bg-red-100 text-red-800'
                                 }`
                             }, 
-                                showResult ? '✅' : '❌',
-                                showResult ? ' Правильно!' : ` Неправильно. Правильный ответ: ${currentTask?.answer || 'см. варианты выше'}`
+                                React.createElement(showResult ? CheckCircle : XCircle, {size: 20}),
+                                showResult ? 'Правильно!' : `Неправильно. Правильный ответ: ${currentTask?.answer || 'см. варианты выше'}`
                             ),
                             
                             renderTask(),
@@ -457,12 +782,24 @@
                                 React.createElement('button', {
                                     onClick: checkAnswer,
                                     disabled: !userAnswer.trim(),
-                                    className: 'bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 disabled:bg-gray-400'
+                                    className: 'bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed'
                                 }, 'Проверить'),
                                 React.createElement('button', {
                                     onClick: generateRandomTask,
-                                    className: 'bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600'
-                                }, '🔄 Новое задание')
+                                    className: 'bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 flex items-center gap-2'
+                                }, 
+                                    React.createElement(RotateCcw, {size: 16}),
+                                    'Новое задание'
+                                )
+                            )
+                        ),
+
+                        currentTask?.word && vocabulary[currentTask.category]?.[currentTask.word] && 
+                        React.createElement('div', {className: 'bg-blue-50 rounded-lg p-4'}, 
+                            React.createElement('h3', {className: 'font-semibold text-blue-800 mb-2'}, 'Изучаемое слово:'),
+                            React.createElement('div', {className: 'text-blue-700'}, 
+                                React.createElement('p', {className: 'font-medium'}, currentTask.word),
+                                React.createElement('p', {className: 'text-sm'}, vocabulary[currentTask.category][currentTask.word].forms)
                             )
                         )
                     ),
