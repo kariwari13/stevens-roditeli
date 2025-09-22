@@ -534,10 +534,86 @@
 
             const speakText = (text) => {
                 if ('speechSynthesis' in window) {
+                    // Останавливаем предыдущее воспроизведение
+                    window.speechSynthesis.cancel();
+                    
                     const utterance = new SpeechSynthesisUtterance(text);
+                    
+                    // Настройки для лучшего русского произношения
                     utterance.lang = 'ru-RU';
-                    utterance.rate = 0.8;
-                    window.speechSynthesis.speak(utterance);
+                    utterance.rate = 0.7; // Медленнее для четкости
+                    utterance.pitch = 1.0;
+                    utterance.volume = 1.0;
+                    
+                    // Ждем загрузки голосов
+                    const setVoice = () => {
+                        const voices = window.speechSynthesis.getVoices();
+                        console.log('Доступные голоса:', voices.map(v => `${v.name} (${v.lang})`));
+                        
+                        // Ищем лучшие русские голоса в порядке предпочтения
+                        const preferredVoices = [
+                            // Google голоса (лучшее качество)
+                            voices.find(voice => voice.name.toLowerCase().includes('google') && voice.lang.startsWith('ru')),
+                            // Microsoft голоса
+                            voices.find(voice => voice.name.toLowerCase().includes('microsoft') && voice.lang.startsWith('ru')),
+                            voices.find(voice => voice.name.toLowerCase().includes('irina') && voice.lang.startsWith('ru')),
+                            voices.find(voice => voice.name.toLowerCase().includes('pavel') && voice.lang.startsWith('ru')),
+                            // Любой русский голос
+                            voices.find(voice => voice.lang === 'ru-RU'),
+                            voices.find(voice => voice.lang.startsWith('ru')),
+                            // Запасные варианты
+                            voices.find(voice => voice.name.toLowerCase().includes('russian')),
+                            voices.find(voice => voice.name.toLowerCase().includes('ru'))
+                        ];
+                        
+                        // Выбираем первый доступный голос
+                        const selectedVoice = preferredVoices.find(voice => voice !== undefined);
+                        
+                        if (selectedVoice) {
+                            utterance.voice = selectedVoice;
+                            console.log('Используется голос:', selectedVoice.name, selectedVoice.lang);
+                        } else {
+                            console.log('Русский голос не найден, используется системный по умолчанию');
+                        }
+                        
+                        // Обработка ошибок
+                        utterance.onerror = (event) => {
+                            console.error('Ошибка синтеза речи:', event.error);
+                        };
+                        
+                        utterance.onend = () => {
+                            console.log('Воспроизведение завершено');
+                        };
+                        
+                        // Воспроизводим
+                        try {
+                            window.speechSynthesis.speak(utterance);
+                        } catch (error) {
+                            console.error('Не удалось воспроизвести:', error);
+                        }
+                    };
+                    
+                    // Если голоса уже загружены
+                    if (window.speechSynthesis.getVoices().length > 0) {
+                        setVoice();
+                    } else {
+                        // Ждем загрузки голосов
+                        window.speechSynthesis.onvoiceschanged = () => {
+                            setVoice();
+                            window.speechSynthesis.onvoiceschanged = null; // Убираем обработчик
+                        };
+                        
+                        // Таймаут на случай если голоса не загружаются
+                        setTimeout(() => {
+                            if (window.speechSynthesis.getVoices().length === 0) {
+                                console.log('Голоса не загрузились, используем по умолчанию');
+                                window.speechSynthesis.speak(utterance);
+                            }
+                        }, 1000);
+                    }
+                } else {
+                    console.error('Синтез речи не поддерживается в этом браузере');
+                    alert('Ваш браузер не поддерживает воспроизведение речи');
                 }
             };
 
