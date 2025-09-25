@@ -1,4 +1,285 @@
-const sampleTasks = [
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Русский язык для семьи</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Lucide icons as simple SVG components
+        const Mic = ({ size = 20, className = "" }) => (
+            <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+        );
+
+        const MicOff = ({ size = 20, className = "" }) => (
+            <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="2" y1="2" x2="22" y2="22"></line>
+                <path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2"></path>
+                <path d="M5 10v2a7 7 0 0 0 12 5"></path>
+                <path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"></path>
+                <path d="M9 9v3a3 3 0 0 0 5.12 2.12"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+        );
+
+        const Volume2 = ({ size = 20, className = "" }) => (
+            <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+        );
+
+        const RotateCcw = ({ size = 16, className = "" }) => (
+            <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+            </svg>
+        );
+
+        const CheckCircle = ({ size = 20, className = "" }) => (
+            <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22,4 12,14.01 9,11.01"></polyline>
+            </svg>
+        );
+
+        const XCircle = ({ size = 20, className = "" }) => (
+            <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+        );
+
+        const Baby = ({ size = 28, className = "" }) => (
+            <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 12h6m-6 4h6m3-10H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z"></path>
+            </svg>
+        );
+
+        const Users = ({ size = 20, className = "" }) => (
+            <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+        );
+
+        const MessageCircle = ({ size = 20, className = "" }) => (
+            <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+        );
+
+        const RussianFamilyApp = () => {
+            const [currentTask, setCurrentTask] = useState(null);
+            const [userAnswer, setUserAnswer] = useState('');
+            const [showResult, setShowResult] = useState(null);
+            const [score, setScore] = useState({ correct: 0, total: 0 });
+            const [isRecording, setIsRecording] = useState(false);
+            const [activeTab, setActiveTab] = useState('tasks');
+            const [selectedCategory, setSelectedCategory] = useState('all');
+            
+            const mediaRecorderRef = useRef(null);
+            const audioChunksRef = useRef([]);
+
+            const vocabulary = {
+                baby_care: {
+                    'пи́сать-попи́сать': { 
+                        definition: 'to urinate', 
+                        example: 'Она попи́сала. Нужно поменять па́мперс. (She peed. Need to change the diaper.)',
+                        forms: 'Фразы: "Она хо́чет пи́сать" (She wants to pee), "То́лько что попи́сала" (Just peed)',
+                        phrases: ['Она хо́чет пи́сать', 'То́лько что попи́сала']
+                    },
+                    'ка́кать-пока́кать': { 
+                        definition: 'to defecate', 
+                        example: 'Она пока́кала. Па́мперс гря́зный. (She pooped. The diaper is dirty.)',
+                        forms: 'Фразы: "Сейча́с бу́дет ка́кать" (About to poop), "Уже́ пока́кала" (Already pooped)',
+                        phrases: ['Сейча́с бу́дет ка́кать', 'Уже́ пока́кала']
+                    },
+                    'опи́салась': { 
+                        definition: 'she wet herself', 
+                        example: 'Она опи́салась во сне (She wet herself in her sleep)',
+                        forms: 'Фразы: "Вся опи́салась" (Completely wet herself), "Опя́ть опи́салась" (Wet herself again)',
+                        phrases: ['Вся опи́салась', 'Опя́ть опи́салась']
+                    },
+                    'обка́калась': { 
+                        definition: 'she soiled herself', 
+                        example: 'Она обка́калась с головы́ до ног (She soiled herself from head to toe)',
+                        forms: 'Фразы: "Вся обка́калась" (Completely soiled herself), "Си́льно обка́калась" (Badly soiled herself)',
+                        phrases: ['Вся обка́калась', 'Си́льно обка́калась']
+                    },
+                    'па́мперс': { 
+                        definition: 'diaper', 
+                        example: 'Поменя́й па́мперс, он мо́крый (Change the diaper, it is wet)',
+                        forms: 'Фразы: "Чи́стый па́мперс" (Clean diaper), "Гря́зный па́мперс" (Dirty diaper)',
+                        phrases: ['Чи́стый па́мперс', 'Гря́зный па́мперс']
+                    },
+                    'отры́жка': { 
+                        definition: 'burp', 
+                        example: 'У неё отры́жка по́сле кормле́ния (She has a burp after feeding)',
+                        forms: 'Фразы: "Си́льная отры́жка" (Strong burp), "Гро́мкая отры́жка" (Loud burp)',
+                        phrases: ['Си́льная отры́жка', 'Гро́мкая отры́жка']
+                    },
+                    'рыга́ть-рыгну́ть': { 
+                        definition: 'to burp', 
+                        example: 'Осторо́жно, она сейча́с на тебя́ рыгнёт (Careful, she will burp on you now)',
+                        forms: 'Фразы: "Мо́жет рыгну́ть" (Might burp), "Сейча́с рыгнет" (Will burp now)',
+                        phrases: ['Мо́жет рыгну́ть', 'Сейча́с рыгнет']
+                    },
+                    'салфе́тка': { 
+                        definition: 'napkin', 
+                        example: 'Возьми́ салфе́тку, вы́три ей ро́тик (Take a napkin, wipe her mouth)',
+                        forms: 'Фразы: "Мо́края салфе́тка" (Wet napkin), "Чи́стая салфе́тка" (Clean napkin)',
+                        phrases: ['Мо́края салфе́тка', 'Чи́стая салфе́тка']
+                    },
+                    'полоте́нце': { 
+                        definition: 'towel', 
+                        example: 'Возьми́ полоте́нце по́сле купа́ния (Take a towel after bathing)',
+                        forms: 'Фразы: "Мя́гкое полоте́нце" (Soft towel), "Сухо́е полоте́нце" (Dry towel)',
+                        phrases: ['Мя́гкое полоте́нце', 'Сухо́е полоте́нце']
+                    },
+                    'со́ска': { 
+                        definition: 'pacifier', 
+                        example: 'Дай ей со́ску, она́ успоко́ится (Give her the pacifier, she will calm down)',
+                        forms: 'Фразы: "Где со́ска?" (Where is the pacifier?), "Потеря́ла со́ску" (Lost the pacifier)',
+                        phrases: ['Где со́ска?', 'Потеря́ла со́ску']
+                    },
+                    'ко́лики': { 
+                        definition: 'colic', 
+                        example: 'У неё ко́лики, поэ́тому пла́чет (She has colic, that is why she is crying)',
+                        forms: 'Фразы: "Си́льные ко́лики" (Strong colic), "От ко́ликов пла́чет" (Crying from colic)',
+                        phrases: ['Си́льные ко́лики', 'От ко́ликов пла́чет']
+                    },
+                    'грудь': { 
+                        definition: 'breast', 
+                        example: 'Она́ хо́чет грудь, голо́дная (She wants breast, she is hungry)',
+                        forms: 'Фразы: "Дай ей грудь" (Give her breast), "Про́сит грудь" (Asking for breast)',
+                        phrases: ['Дай ей грудь', 'Про́сит грудь']
+                    },
+                    'корми́ть-покорми́ть': { 
+                        definition: 'to feed', 
+                        example: 'Покорми́ её, она́ голо́дная (Feed her, she is hungry)',
+                        forms: 'Фразы: "Вре́мя корми́ть" (Time to feed), "На́до покорми́ть" (Need to feed)',
+                        phrases: ['Вре́мя корми́ть', 'На́до покорми́ть']
+                    }
+                },
+                family: {
+                    'вну́чка': { 
+                        definition: 'granddaughter', 
+                        example: 'На́ша вну́чка (Our granddaughter)',
+                        forms: 'Фразы: "Люби́мая вну́чка" (Beloved granddaughter), "Ма́ленькая вну́чка" (Little granddaughter)',
+                        phrases: ['Люби́мая вну́чка', 'Ма́ленькая вну́чка']
+                    },
+                    'ба́бушка': { 
+                        definition: 'grandmother', 
+                        example: 'Ба́бушка помога́ет с ребёнком (Grandmother helps with the baby)',
+                        forms: 'Фразы: "До́брая ба́бушка" (Kind grandmother), "Ба́бушка кача́ет малы́шку" (Grandmother rocks the little one)',
+                        phrases: ['До́брая ба́бушка', 'Ба́бушка кача́ет малы́шку']
+                    },
+                    'де́душка': { 
+                        definition: 'grandfather', 
+                        example: 'Де́душка игра́ет с ребёнком (Grandfather plays with the baby)',
+                        forms: 'Фразы: "Де́душка де́ржит вну́чку" (Grandfather holds granddaughter), "Де́душка чита́ет ска́зку" (Grandfather reads a fairy tale)',
+                        phrases: ['Де́душка де́ржит вну́чку', 'Де́душка чита́ет ска́зку']
+                    }
+                },
+                actions: {
+                    'держа́ть-подержа́ть': { 
+                        definition: 'to hold', 
+                        example: 'Я держу́ ребёнка (I am holding the baby)',
+                        forms: 'Фразы: "Держи́ кре́пко" (Hold tight), "Подержи́ её" (Hold her)',
+                        phrases: ['Держи́ кре́пко', 'Подержи́ её']
+                    },
+                    'кача́ть-покача́ть': { 
+                        definition: 'to rock', 
+                        example: 'Покача́й её (Rock her)',
+                        forms: 'Фразы: "Ти́хо кача́ть" (Rock quietly), "Кача́ть на рука́х" (Rock in arms)',
+                        phrases: ['Ти́хо кача́ть', 'Кача́ть на рука́х']
+                    },
+                    'укла́дывать-уложи́ть': { 
+                        definition: 'to put to bed', 
+                        example: 'Я её уложи́л спать (I put her to sleep)',
+                        forms: 'Фразы: "Пора́ укла́дывать" (Time to put to bed), "Уложи́ть в крова́тку" (Put in crib)',
+                        phrases: ['Пора́ укла́дывать', 'Уложи́ть в крова́тку']
+                    },
+                    'жале́ть-пожале́ть': { 
+                        definition: 'to feel sorry for, to comfort', 
+                        example: 'Она́ хо́чет, что́бы её пожале́ли (She wants to be comforted)',
+                        forms: 'Фразы: "Пожале́й её" (Comfort her), "Хо́чет что́бы пожале́ли" (Wants to be comforted)',
+                        phrases: ['Пожале́й её', 'Хо́чет что́бы пожале́ли']
+                    },
+                    'успока́ивать-успоко́ить': { 
+                        definition: 'to calm down', 
+                        example: 'Её на́до успоко́ить (She needs to be calmed down)',
+                        forms: 'Фразы: "Попро́буй успоко́ить" (Try to calm), "Успоко́й её" (Calm her down)',
+                        phrases: ['Попро́буй успоко́ить', 'Успоко́й её']
+                    },
+                    'капри́зничать': { 
+                        definition: 'to be fussy', 
+                        example: 'Она́ капри́зничает (She is being fussy)',
+                        forms: 'Фразы: "Переста́нь капри́зничать" (Stop being fussy), "Почему́ капри́зничает?" (Why is she fussy?)',
+                        phrases: ['Переста́нь капри́зничать', 'Почему́ капри́зничает?']
+                    },
+                    'пла́кать': { 
+                        definition: 'to cry', 
+                        example: 'Она́ пла́чет (She is crying)',
+                        forms: 'Фразы: "Си́льно пла́чет" (Crying hard), "Почему́ пла́чет?" (Why is she crying?)',
+                        phrases: ['Си́льно пла́чет', 'Почему́ пла́чет?']
+                    }
+                },
+                health: {
+                    'боле́ть': { 
+                        definition: 'to hurt', 
+                        example: 'У неё боли́т живо́т (Her stomach hurts)',
+                        forms: 'Фразы: "Что боли́т?" (What hurts?), "Си́льно боли́т" (Hurts badly)',
+                        phrases: ['Что боли́т?', 'Си́льно боли́т']
+                    },
+                    'живо́т': { 
+                        definition: 'stomach', 
+                        example: 'У неё боли́т живо́т (Her stomach hurts)',
+                        forms: 'Фразы: "Погла́дь живо́т" (Rub the stomach), "По́лный живо́т" (Full stomach)',
+                        phrases: ['Погла́дь живо́т', 'По́лный живо́т']
+                    },
+                    'зу́бки': { 
+                        definition: 'little teeth', 
+                        example: 'У неё ре́жутся зу́бки (Her teeth are coming in)',
+                        forms: 'Фразы: "Пе́рвые зу́бки" (First teeth), "Боля́т зу́бки" (Teeth hurt)',
+                        phrases: ['Пе́рвые зу́бки', 'Боля́т зу́бки']
+                    },
+                    'температу́ра': { 
+                        definition: 'temperature', 
+                        example: 'У неё температу́ра (She has a fever)',
+                        forms: 'Фразы: "Высо́кая температу́ра" (High fever), "Ме́рить температу́ру" (Take temperature)',
+                        phrases: ['Высо́кая температу́ра', 'Ме́рить температу́ру']
+                    }
+                }
+            };
+
+            const sampleTasks = [
                 // Уход за ребёнком (8 заданий)
                 {
                     type: 'translation_ru_en',
@@ -64,12 +345,12 @@ const sampleTasks = [
                     word: 'ко́лики'
                 },
 
-                // Семья (6 заданий)
+                // Семья (4 задания)
                 {
                     type: 'situational',
                     category: 'family',
-                    question: 'Ситуация: Гульнара́ спрашивает, как дела у вну́чки. Ответь.',
-                    context: 'Ребёнок только что поел и спит.',
+                    question: 'Ситуация: Ба́бушка спра́шивает, как дела́ у вну́чки. Отве́ть.',
+                    context: 'Ребёнок то́лько что пое́л и спит.',
                     expectedElements: ['хорошо', 'поела', 'спит'],
                     word: 'вну́чка'
                 },
@@ -82,34 +363,18 @@ const sampleTasks = [
                     word: 'вну́чка'
                 },
                 {
-                    type: 'fill_blanks',
-                    category: 'family',
-                    question: 'Заполните: "___ игра́ет с ребёнком"',
-                    answer: 'Гульнара',
-                    hint: '(имя свекрови)',
-                    word: 'Гульнара́'
-                },
-                {
                     type: 'multiple_choice',
                     category: 'family',
-                    question: 'Кто читает сказку? "___ чита́ет ска́зку"',
+                    question: 'Кто чита́ет ска́зку? "___ чита́ет ска́зку"',
                     options: ['Дедушка', 'Дедушки', 'Дедушке', 'Дедушку'],
                     correct: 0,
                     word: 'де́душка'
                 },
                 {
-                    type: 'translation_ru_en',
-                    category: 'family',
-                    question: 'Переведите: "И́рик де́ржит вну́чку"',
-                    answer: 'irik holds granddaughter',
-                    alternatives: ['irik holds granddaughter', 'irik is holding granddaughter'],
-                    word: 'И́рик'
-                },
-                {
                     type: 'situational',
                     category: 'family',
-                    question: 'Ситуация: И́рик спрашивает "Где ба́бушка?" Ответь.',
-                    context: 'Бабушка качает ребёнка в другой комнате.',
+                    question: 'Ситуация: Де́душка спра́шивает "Где ба́бушка?" Отве́ть.',
+                    context: 'Ба́бушка кача́ет ребёнка в друго́й ко́мнате.',
                     expectedElements: ['другой', 'комнате', 'качает'],
                     word: 'ба́бушка'
                 },
@@ -126,7 +391,7 @@ const sampleTasks = [
                 {
                     type: 'grammar_forms',
                     category: 'actions',
-                    question: 'Поставьте глагол правильно: "Я ___ (держа́ть) ребёнка"',
+                    question: 'Поста́вьте глаго́л пра́вильно: "Я ___ (держа́ть) ребёнка"',
                     answer: 'держу',
                     alternatives: ['держу'],
                     word: 'держа́ть-подержа́ть'
@@ -134,7 +399,7 @@ const sampleTasks = [
                 {
                     type: 'fill_blanks',
                     category: 'actions',
-                    question: 'Заполните: "___ её немного"',
+                    question: 'Заполните: "___ её немно́го"',
                     answer: 'покачай',
                     hint: '(кача́ть ребёнка)',
                     word: 'кача́ть-покача́ть'
@@ -150,7 +415,7 @@ const sampleTasks = [
                 {
                     type: 'multiple_choice',
                     category: 'actions',
-                    question: 'Что надо сделать? "Её на́до ___"',
+                    question: 'Что на́до сде́лать? "Её на́до ___"',
                     options: ['успокаивать', 'успокоить', 'успокойся', 'успокоила'],
                     correct: 1,
                     word: 'успока́ивать-успоко́ить'
@@ -175,7 +440,7 @@ const sampleTasks = [
                 {
                     type: 'multiple_choice',
                     category: 'health',
-                    question: 'Что болит? "У неё боли́т ___"',
+                    question: 'Что боли́т? "У неё боли́т ___"',
                     options: ['живот', 'живота', 'животу', 'животом'],
                     correct: 0,
                     word: 'живо́т'
@@ -193,7 +458,7 @@ const sampleTasks = [
                     category: 'health',
                     question: 'Заполните: "У неё ре́жутся ___"',
                     answer: 'зубки',
-                    hint: '(что режется у малышей)',
+                    hint: '(что ре́жется у малыше́й)',
                     word: 'зу́бки'
                 },
                 {
@@ -207,76 +472,560 @@ const sampleTasks = [
                 {
                     type: 'situational',
                     category: 'health',
-                    question: 'Ситуация: Ребёнок горячий. Что сказать Гульнаре́?',
-                    context: 'У ребёнка жар и он вялый.',
+                    question: 'Ситуация: Ребёнок горя́чий. Что сказа́ть ба́бушке?',
+                    context: 'У ребёнка жар и он вя́лый.',
                     expectedElements: ['температура', 'горячий', 'жар'],
                     word: 'температу́ра'
                 }
-            ];            const vocabulary = {
-                baby_care: {
-                    'пи́сать-попи́сать': { 
-                        definition: 'to urinate', 
-                        example: 'Она попи́сала. Нужно поменять памперс. (She peed. Need to change the diaper.)',
-                        forms: 'Фразы: "Она хочет пи́сать" (She wants to pee), "Только что попи́сала" (Just peed)'
-                    },
-                    'ка́кать-пока́кать': { 
-                        definition: 'to defecate', 
-                        example: 'Она пока́кала. Памперс грязный. (She pooped. The diaper is dirty.)',
-                        forms: 'Фразы: "Сейчас будет ка́кать" (About to poop), "Уже пока́кала" (Already pooped)'
-                    },
-                    'опи́салась': { 
-                        definition: 'she wet herself', 
-                        example: 'Она опи́салась во сне (She wet herself in her sleep)',
-                        forms: 'Фразы: "Вся опи́салась" (Completely wet herself), "Опять опи́салась" (Wet herself again)'
-                    },
-                    'обка́калась': { 
-                        definition: 'she soiled herself', 
-                        example: 'Она обка́калась с головы до ног (She soiled herself from head to toe)',
-                        forms: 'Фразы: "Вся обка́калась" (Completely soiled herself), "Сильно обка́калась" (Badly soiled herself)'
-                    },
-                    'па́мперс': { 
-                        definition: 'diaper', 
-                        example: 'Поменя́й па́мперс, он мо́крый (Change the diaper, it is wet)',
-                        forms: 'Фразы: "Чи́стый па́мперс" (Clean diaper), "Гря́зный па́мперс" (Dirty diaper)'
-                    },
-                    'отры́жка': { 
-                        definition: 'burp', 
-                        example: 'У неё отры́жка после кормле́ния (She has a burp after feeding)',
-                        forms: 'Фразы: "Си́льная отры́жка" (Strong burp), "Гро́мкая отры́жка" (Loud burp)'
-                    },
-                    'рыга́ть-рыгну́ть': { 
-                        definition: 'to burp', 
-                        example: 'Осторо́жно, она сейча́с на тебя́ рыгнёт (Careful, she will burp on you now)',
-                        forms: 'Фразы: "Мо́жет рыгну́ть" (Might burp), "Сейча́с рыгнет" (Will burp now)'
-                    },
-                    'салфе́тка': { 
-                        definition: 'napkin', 
-                        example: 'Возьми́ салфе́тку, вы́три ей ро́тик (Take a napkin, wipe her mouth)',
-                        forms: 'Фразы: "Мо́края салфе́тка" (Wet napkin), "Чи́стая салфе́тка" (Clean napkin)'
-                    },
-                    'полоте́нце': { 
-                        definition: 'towel', 
-                        example: 'Возьми́ полоте́нце по́сле купа́ния (Take a towel after bathing)',
-                        forms: 'Фразы: "Мя́гкое полоте́нце" (Soft towel), "Сухо́е полоте́нце" (Dry towel)'
-                    },
-                    'со́ска': { 
-                        definition: 'pacifier', 
-                        example: 'Дай ей со́ску, она́ успоко́ится (Give her the pacifier, she will calm down)',
-                        forms: 'Фразы: "Где со́ска?" (Where is the pacifier?), "Потеря́ла со́ску" (Lost the pacifier)'
-                    },
-                    'ко́лики': { 
-                        definition: 'colic', 
-                        example: 'У неё ко́лики, поэ́тому пла́чет (She has colic, that is why she is crying)',
-                        forms: 'Фразы: "Си́льные ко́лики" (Strong colic), "От ко́ликов пла́чет" (Crying from colic)'
-                    },
-                    'грудь': { 
-                        definition: 'breast', 
-                        example: 'Она́ хо́чет грудь, голо́дная (She wants breast, she is hungry)',
-                        forms: 'Фразы: "Дай ей грудь" (Give her breast), "Про́сит грудь" (Asking for breast)'
-                    },
-                    'корми́ть-покорми́ть': { 
-                        definition: 'to feed', 
-                        example: 'Покорми́ её, она́ голо́дная (Feed her, she is hungry)',
-                        forms: 'Фразы: "Вре́мя корми́ть" (Time to feed), "На́до покорми́ть" (Need to feed)'
+            ];
+
+            const generateRandomTask = () => {
+                const filteredTasks = selectedCategory === 'all' 
+                    ? sampleTasks 
+                    : sampleTasks.filter(task => task.category === selectedCategory);
+                
+                const randomTask = filteredTasks[Math.floor(Math.random() * filteredTasks.length)];
+                setCurrentTask({...randomTask, id: Date.now()});
+                setUserAnswer('');
+                setShowResult(null);
+            };
+
+            const checkAnswer = () => {
+                if (!currentTask) return;
+                
+                let isCorrect = false;
+                
+                switch(currentTask.type) {
+                    case 'multiple_choice':
+                        isCorrect = parseInt(userAnswer) === currentTask.correct;
+                        break;
+                    case 'translation_ru_en':
+                    case 'translation_en_ru':
+                    case 'fill_blanks':
+                    case 'grammar_forms':
+                        const normalizedAnswer = userAnswer.toLowerCase().trim();
+                        if (currentTask.alternatives) {
+                            isCorrect = currentTask.alternatives.some(alt => 
+                                alt.toLowerCase() === normalizedAnswer
+                            );
+                        } else {
+                            isCorrect = normalizedAnswer === currentTask.answer.toLowerCase();
+                        }
+                        break;
+                    case 'situational':
+                        isCorrect = currentTask.expectedElements.some(element =>
+                            userAnswer.toLowerCase().includes(element.toLowerCase())
+                        );
+                        break;
+                    default:
+                        isCorrect = true;
+                }
+                
+                setScore(prev => ({
+                    correct: prev.correct + (isCorrect ? 1 : 0),
+                    total: prev.total + 1
+                }));
+                
+                setShowResult(isCorrect);
+                
+                // Убираем автоматическое переключение на следующее задание
+                // Пользователь сам нажмет кнопку "Новое задание"
+            };
+
+            const speakText = (text) => {
+                if ('speechSynthesis' in window) {
+                    // Останавливаем предыдущее воспроизведение
+                    window.speechSynthesis.cancel();
+                    
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    
+                    // Настройки для лучшего русского произношения
+                    utterance.lang = 'ru-RU';
+                    utterance.rate = 0.7; // Медленнее для четкости
+                    utterance.pitch = 1.0;
+                    utterance.volume = 1.0;
+                    
+                    // Ждем загрузки голосов
+                    const setVoice = () => {
+                        const voices = window.speechSynthesis.getVoices();
+                        console.log('Доступные голоса:', voices.map(v => `${v.name} (${v.lang})`));
+                        
+                        // Ищем лучшие русские голоса в порядке предпочтения
+                        const preferredVoices = [
+                            // Google голоса (лучшее качество)
+                            voices.find(voice => voice.name.toLowerCase().includes('google') && voice.lang.startsWith('ru')),
+                            // Microsoft голоса
+                            voices.find(voice => voice.name.toLowerCase().includes('microsoft') && voice.lang.startsWith('ru')),
+                            voices.find(voice => voice.name.toLowerCase().includes('irina') && voice.lang.startsWith('ru')),
+                            voices.find(voice => voice.name.toLowerCase().includes('pavel') && voice.lang.startsWith('ru')),
+                            // Любой русский голос
+                            voices.find(voice => voice.lang === 'ru-RU'),
+                            voices.find(voice => voice.lang.startsWith('ru')),
+                            // Запасные варианты
+                            voices.find(voice => voice.name.toLowerCase().includes('russian')),
+                            voices.find(voice => voice.name.toLowerCase().includes('ru'))
+                        ];
+                        
+                        // Выбираем первый доступный голос
+                        const selectedVoice = preferredVoices.find(voice => voice !== undefined);
+                        
+                        if (selectedVoice) {
+                            utterance.voice = selectedVoice;
+                            console.log('Используется голос:', selectedVoice.name, selectedVoice.lang);
+                        } else {
+                            console.log('Русский голос не найден, используется системный по умолчанию');
+                        }
+                        
+                        // Обработка ошибок
+                        utterance.onerror = (event) => {
+                            console.error('Ошибка синтеза речи:', event.error);
+                        };
+                        
+                        utterance.onend = () => {
+                            console.log('Воспроизведение завершено');
+                        };
+                        
+                        // Воспроизводим
+                        try {
+                            window.speechSynthesis.speak(utterance);
+                        } catch (error) {
+                            console.error('Не удалось воспроизвести:', error);
+                        }
+                    };
+                    
+                    // Если голоса уже загружены
+                    if (window.speechSynthesis.getVoices().length > 0) {
+                        setVoice();
+                    } else {
+                        // Ждем загрузки голосов
+                        window.speechSynthesis.onvoiceschanged = () => {
+                            setVoice();
+                            window.speechSynthesis.onvoiceschanged = null; // Убираем обработчик
+                        };
+                        
+                        // Таймаут на случай если голоса не загружаются
+                        setTimeout(() => {
+                            if (window.speechSynthesis.getVoices().length === 0) {
+                                console.log('Голоса не загрузились, используем по умолчанию');
+                                window.speechSynthesis.speak(utterance);
+                            }
+                        }, 1000);
                     }
-                },
+                } else {
+                    console.error('Синтез речи не поддерживается в этом браузере');
+                    alert('Ваш браузер не поддерживает воспроизведение речи');
+                }
+            };
+
+            const startRecording = async () => {
+                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                    alert('Ваш браузер не поддерживает распознавание речи. Попробуйте Chrome или Edge.');
+                    return;
+                }
+
+                try {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    const recognition = new SpeechRecognition();
+                    
+                    recognition.lang = 'ru-RU';
+                    recognition.continuous = false;
+                    recognition.interimResults = false;
+                    recognition.maxAlternatives = 3;
+                    
+                    recognition.onstart = () => {
+                        setIsRecording(true);
+                        setUserAnswer('Говорите...');
+                    };
+                    
+                    recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript.trim();
+                        console.log('Распознано:', transcript);
+                        setUserAnswer(transcript);
+                        setIsRecording(false);
+                        
+                        // Автоматически проверяем ответ для заданий на аудирование
+                        if (currentTask && currentTask.type === 'listening') {
+                            setTimeout(() => {
+                                checkAnswer();
+                            }, 1000);
+                        }
+                    };
+                    
+                    recognition.onerror = (event) => {
+                        console.error('Ошибка распознавания:', event.error);
+                        setIsRecording(false);
+                        
+                        let errorMessage = 'Ошибка распознавания речи. ';
+                        switch(event.error) {
+                            case 'no-speech':
+                                errorMessage += 'Речь не обнаружена. Попробуйте говорить громче.';
+                                break;
+                            case 'audio-capture':
+                                errorMessage += 'Микрофон недоступен.';
+                                break;
+                            case 'not-allowed':
+                                errorMessage += 'Доступ к микрофону запрещён. Разрешите доступ в настройках браузера.';
+                                break;
+                            case 'network':
+                                errorMessage += 'Ошибка сети. Проверьте подключение к интернету.';
+                                break;
+                            default:
+                                errorMessage += 'Попробуйте ещё раз.';
+                        }
+                        setUserAnswer(errorMessage);
+                    };
+                    
+                    recognition.onend = () => {
+                        setIsRecording(false);
+                    };
+                    
+                    recognition.start();
+                    
+                } catch (error) {
+                    console.error('Ошибка запуска распознавания:', error);
+                    setIsRecording(false);
+                    setUserAnswer('Не удалось запустить распознавание речи');
+                }
+            };
+
+            const stopRecording = () => {
+                setIsRecording(false);
+                if (window.currentRecognition) {
+                    window.currentRecognition.stop();
+                    window.currentRecognition = null;
+                }
+            };
+
+            useEffect(() => {
+                generateRandomTask();
+            }, [selectedCategory]);
+
+            const renderTask = () => {
+                if (!currentTask) return null;
+
+                switch(currentTask.type) {
+                    case 'multiple_choice':
+                        return (
+                            <div className="space-y-4">
+                                <p className="text-lg font-medium">{currentTask.question}</p>
+                                <div className="grid grid-cols-2 gap-2">
+                                    {currentTask.options.map((option, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => setUserAnswer(index.toString())}
+                                            className={`p-3 border rounded-lg transition-colors ${
+                                                userAnswer === index.toString()
+                                                    ? 'bg-blue-500 text-white'
+                                                    : 'bg-white hover:bg-gray-50'
+                                            }`}
+                                        >
+                                            {option}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        );
+                    
+                    case 'listening':
+                        return (
+                            <div className="space-y-4">
+                                <p className="text-lg font-medium">{currentTask.question}</p>
+                                <button
+                                    onClick={() => speakText(currentTask.audio)}
+                                    className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+                                >
+                                    <Volume2 size={20} />
+                                    Прослушать
+                                </button>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={isRecording ? stopRecording : startRecording}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                                            isRecording 
+                                                ? 'bg-red-500 hover:bg-red-600' 
+                                                : 'bg-blue-500 hover:bg-blue-600'
+                                        } text-white`}
+                                    >
+                                        {isRecording ? <MicOff size={20} /> : <Mic size={20} />}
+                                        {isRecording ? 'Остановить' : 'Записать ответ'}
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                    
+                    case 'situational':
+                        return (
+                            <div className="space-y-4">
+                                <div className="bg-yellow-50 p-4 rounded-lg">
+                                    <h3 className="font-semibold text-yellow-800">Ситуация:</h3>
+                                    <p className="text-yellow-700">{currentTask.question}</p>
+                                    {currentTask.context && (
+                                        <p className="text-sm text-yellow-600 mt-2">
+                                            Контекст: {currentTask.context}
+                                        </p>
+                                    )}
+                                </div>
+                                <textarea
+                                    value={userAnswer}
+                                    onChange={(e) => setUserAnswer(e.target.value)}
+                                    placeholder="Введите ваш ответ..."
+                                    className="w-full p-3 border border-gray-300 rounded-lg"
+                                    rows="3"
+                                />
+                            </div>
+                        );
+                    
+                    default:
+                        return (
+                            <div className="space-y-4">
+                                <p className="text-lg font-medium">{currentTask.question}</p>
+                                {currentTask.hint && (
+                                    <p className="text-sm text-gray-600">{currentTask.hint}</p>
+                                )}
+                                <input
+                                    type="text"
+                                    value={userAnswer}
+                                    onChange={(e) => setUserAnswer(e.target.value)}
+                                    placeholder="Введите ваш ответ..."
+                                    className="w-full p-3 border border-gray-300 rounded-lg"
+                                    onKeyPress={(e) => e.key === 'Enter' && checkAnswer()}
+                                />
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={isRecording ? stopRecording : startRecording}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                                            isRecording 
+                                                ? 'bg-red-500 hover:bg-red-600' 
+                                                : 'bg-blue-500 hover:bg-blue-600'
+                                        } text-white`}
+                                    >
+                                        {isRecording ? <MicOff size={20} /> : <Mic size={20} />}
+                                        Голосовой ответ
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                }
+            };
+
+            const renderVocabulary = () => (
+                <div className="space-y-6">
+                    {Object.entries(vocabulary).map(([category, words]) => (
+                        <div key={category} className="bg-white rounded-lg p-6 shadow-sm border">
+                            <h3 className="text-xl font-semibold mb-4 text-blue-600">
+                                {category === 'baby_care' ? '👶 Уход за ребёнком' :
+                                 category === 'family' ? '👨‍👩‍👧‍👦 Семья' : 
+                                 category === 'actions' ? '🤲 Действия' : '🏥 Здоровье'}
+                            </h3>
+                            <div className="grid gap-4">
+                                {Object.entries(words).map(([word, info]) => (
+                                    <div key={word} className="border-l-4 border-blue-200 pl-4">
+                                        <div className="flex items-center justify-between">
+                                            <h4 className="font-semibold text-lg">{word}</h4>
+                                            <button
+                                                onClick={() => speakText(word)}
+                                                className="text-blue-500 hover:text-blue-700"
+                                            >
+                                                <Volume2 size={20} />
+                                            </button>
+                                        </div>
+                                        <p className="text-gray-600">{info.definition}</p>
+                                        <div className="flex items-center gap-2 mt-2">
+                                            <p className="text-green-700 flex-1">"{info.example}"</p>
+                                            <button
+                                                onClick={() => speakText(info.example.split(' (')[0])}
+                                                className="text-green-600 hover:text-green-800"
+                                            >
+                                                <Volume2 size={16} />
+                                            </button>
+                                        </div>
+                                        <div className="mt-2">
+                                            <p className="text-sm text-gray-500 mb-2">{info.forms}</p>
+                                            {info.phrases && (
+                                                <div className="space-y-1">
+                                                    {info.phrases.map((phrase, index) => (
+                                                        <div key={index} className="flex items-center gap-2">
+                                                            <span className="text-sm text-blue-600">• {phrase}</span>
+                                                            <button
+                                                                onClick={() => speakText(phrase)}
+                                                                className="text-blue-500 hover:text-blue-700"
+                                                            >
+                                                                <Volume2 size={14} />
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+
+            return (
+                <div className="max-w-4xl mx-auto bg-gray-50 min-h-screen">
+                    <div className="bg-blue-600 text-white p-6">
+                        <h1 className="text-2xl font-bold flex items-center gap-2">
+                            <Baby size={28} />
+                            Подготовка к общению с русскими родственниками
+                        </h1>
+                        <p className="mt-2 opacity-90">
+                            Готовимся к приезду бабушки и дедушки из России
+                        </p>
+                        <div className="mt-4 flex gap-4 text-sm">
+                            <span>Правильно: {score.correct}</span>
+                            <span>Всего: {score.total}</span>
+                            <span>Точность: {score.total > 0 ? Math.round((score.correct / score.total) * 100) : 0}%</span>
+                        </div>
+                    </div>
+
+                    <div className="flex border-b bg-white">
+                        <button
+                            onClick={() => setActiveTab('tasks')}
+                            className={`flex-1 p-4 text-center font-medium ${
+                                activeTab === 'tasks' 
+                                    ? 'border-b-2 border-blue-500 text-blue-600' 
+                                    : 'text-gray-600 hover:text-gray-800'
+                            }`}
+                        >
+                            <MessageCircle className="mx-auto mb-1" size={20} />
+                            Задания
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('vocabulary')}
+                            className={`flex-1 p-4 text-center font-medium ${
+                                activeTab === 'vocabulary' 
+                                    ? 'border-b-2 border-blue-500 text-blue-600' 
+                                    : 'text-gray-600 hover:text-gray-800'
+                            }`}
+                        >
+                            <Users className="mx-auto mb-1" size={20} />
+                            Словарь
+                        </button>
+                    </div>
+
+                    <div className="p-6">
+                        {activeTab === 'tasks' && (
+                            <div className="space-y-6">
+                                <div className="flex gap-2 flex-wrap">
+                                    <button
+                                        onClick={() => setSelectedCategory('all')}
+                                        className={`px-4 py-2 rounded-lg ${
+                                            selectedCategory === 'all' 
+                                                ? 'bg-blue-500 text-white' 
+                                                : 'bg-white border hover:bg-gray-50'
+                                        }`}
+                                    >
+                                        Все категории
+                                    </button>
+                                    <button
+                                        onClick={() => setSelectedCategory('baby_care')}
+                                        className={`px-4 py-2 rounded-lg ${
+                                            selectedCategory === 'baby_care' 
+                                                ? 'bg-blue-500 text-white' 
+                                                : 'bg-white border hover:bg-gray-50'
+                                        }`}
+                                    >
+                                        👶 Уход за ребёнком
+                                    </button>
+                                    <button
+                                        onClick={() => setSelectedCategory('family')}
+                                        className={`px-4 py-2 rounded-lg ${
+                                            selectedCategory === 'family' 
+                                                ? 'bg-blue-500 text-white' 
+                                                : 'bg-white border hover:bg-gray-50'
+                                        }`}
+                                    >
+                                        👨‍👩‍👧‍👦 Семья
+                                    </button>
+                                    <button
+                                        onClick={() => setSelectedCategory('actions')}
+                                        className={`px-4 py-2 rounded-lg ${
+                                            selectedCategory === 'actions' 
+                                                ? 'bg-blue-500 text-white' 
+                                                : 'bg-white border hover:bg-gray-50'
+                                        }`}
+                                    >
+                                        🤲 Действия
+                                    </button>
+                                    <button
+                                        onClick={() => setSelectedCategory('health')}
+                                        className={`px-4 py-2 rounded-lg ${
+                                            selectedCategory === 'health' 
+                                                ? 'bg-blue-500 text-white' 
+                                                : 'bg-white border hover:bg-gray-50'
+                                        }`}
+                                    >
+                                        🏥 Здоровье
+                                    </button>
+                                </div>
+
+                                <div className="bg-white rounded-lg p-6 shadow-sm border">
+                                    {showResult !== null && (
+                                        <div className={`mb-4 p-4 rounded-lg flex items-center gap-2 ${
+                                            showResult 
+                                                ? 'bg-green-100 text-green-800' 
+                                                : 'bg-red-100 text-red-800'
+                                        }`}>
+                                            {showResult ? <CheckCircle size={20} /> : <XCircle size={20} />}
+                                            {showResult ? 'Правильно!' : `Неправильно. Правильный ответ: ${currentTask?.answer || 'см. варианты выше'}`}
+                                        </div>
+                                    )}
+                                    
+                                    {renderTask()}
+                                    
+                                    {currentTask && (
+                                        <div className="mt-6 flex gap-3">
+                                            {showResult === null ? (
+                                                <button
+                                                    onClick={checkAnswer}
+                                                    disabled={!userAnswer.trim()}
+                                                    className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                                >
+                                                    Проверить
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={generateRandomTask}
+                                                    className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 flex items-center gap-2"
+                                                >
+                                                    <RotateCcw size={16} />
+                                                    Следующее задание
+                                                </button>
+                                            )}
+                                            <button
+                                                onClick={generateRandomTask}
+                                                className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 flex items-center gap-2"
+                                            >
+                                                <RotateCcw size={16} />
+                                                Новое задание
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {currentTask?.word && vocabulary[currentTask.category]?.[currentTask.word] && (
+                                    <div className="bg-blue-50 rounded-lg p-4">
+                                        <h3 className="font-semibold text-blue-800 mb-2">Изучаемое слово:</h3>
+                                        <div className="text-blue-700">
+                                            <p className="font-medium">{currentTask.word}</p>
+                                            <p className="text-sm">{vocabulary[currentTask.category][currentTask.word].forms}</p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {activeTab === 'vocabulary' && renderVocabulary()}
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(React.createElement(RussianFamilyApp), document.getElementById('root'));
+    </script>
+</body>
+</html>
