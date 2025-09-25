@@ -1,527 +1,282 @@
-<!DOCTYPE html>
-
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Русский язык для семьи</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-        }
-    </style>
-</head>
-<body>
-    <div id="root"></div>
-
-```
-<script type="text/babel">
-    const { useState, useEffect, useRef } = React;
-
-    // Lucide icons as simple SVG components
-    const Mic = ({ size = 20, className = "" }) => (
-        <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-            <line x1="12" y1="19" x2="12" y2="23"></line>
-            <line x1="8" y1="23" x2="16" y2="23"></line>
-        </svg>
-    );
-
-    const MicOff = ({ size = 20, className = "" }) => (
-        <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="2" y1="2" x2="22" y2="22"></line>
-            <path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2"></path>
-            <path d="M5 10v2a7 7 0 0 0 12 5"></path>
-            <path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"></path>
-            <path d="M9 9v3a3 3 0 0 0 5.12 2.12"></path>
-            <line x1="12" y1="19" x2="12" y2="23"></line>
-            <line x1="8" y1="23" x2="16" y2="23"></line>
-        </svg>
-    );
-
-    const Volume2 = ({ size = 20, className = "" }) => (
-        <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-        </svg>
-    );
-
-    const RotateCcw = ({ size = 16, className = "" }) => (
-        <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
-            <path d="M3 3v5h5"></path>
-        </svg>
-    );
-
-    const CheckCircle = ({ size = 20, className = "" }) => (
-        <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22,4 12,14.01 9,11.01"></polyline>
-        </svg>
-    );
-
-    const XCircle = ({ size = 20, className = "" }) => (
-        <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="15" y1="9" x2="9" y2="15"></line>
-            <line x1="9" y1="9" x2="15" y2="15"></line>
-        </svg>
-    );
-
-    const Baby = ({ size = 28, className = "" }) => (
-        <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M9 12h6m-6 4h6m3-10H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z"></path>
-        </svg>
-    );
-
-    const Users = ({ size = 20, className = "" }) => (
-        <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-        </svg>
-    );
-
-    const MessageCircle = ({ size = 20, className = "" }) => (
-        <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-        </svg>
-    );
-
-    const RussianFamilyApp = () => {
-        const [currentTask, setCurrentTask] = useState(null);
-        const [userAnswer, setUserAnswer] = useState('');
-        const [showResult, setShowResult] = useState(null);
-        const [score, setScore] = useState({ correct: 0, total: 0 });
-        const [isRecording, setIsRecording] = useState(false);
-        const [activeTab, setActiveTab] = useState('tasks');
-        const [selectedCategory, setSelectedCategory] = useState('all');
-        
-        const mediaRecorderRef = useRef(null);
-        const audioChunksRef = useRef([]);
-
-        const vocabulary = {
-            baby_care: {
-                'пи́сать-попи́сать': { 
-                    definition: 'to urinate', 
-                    example: 'Она попи́сала. Нужно поменять памперс. (She peed. Need to change the diaper.)',
-                    forms: 'Фразы: "Она хочет пи́сать" (She wants to pee), "Только что попи́сала" (Just peed)'
+const sampleTasks = [
+                // Уход за ребёнком (8 заданий)
+                {
+                    type: 'translation_ru_en',
+                    category: 'baby_care',
+                    question: 'Переведите: "Она попи́сала"',
+                    answer: 'she peed',
+                    alternatives: ['she peed', 'she urinated'],
+                    word: 'пи́сать-попи́сать'
                 },
-                'ка́кать-пока́кать': { 
-                    definition: 'to defecate', 
-                    example: 'Она пока́кала. Памперс грязный. (She pooped. The diaper is dirty.)',
-                    forms: 'Фразы: "Сейчас будет ка́кать" (About to poop), "Уже пока́кала" (Already pooped)'
+                {
+                    type: 'translation_ru_en',
+                    category: 'baby_care',
+                    question: 'Переведите: "Она опи́салась"',
+                    answer: 'she wet herself',
+                    alternatives: ['she wet herself', 'she peed herself'],
+                    word: 'опи́салась'
                 },
-                'опи́салась': { 
-                    definition: 'she wet herself', 
-                    example: 'Она опи́салась во сне (She wet herself in her sleep)',
-                    forms: 'Фразы: "Вся опи́салась" (Completely wet herself), "Опять опи́салась" (Wet herself again)'
+                {
+                    type: 'translation_en_ru',
+                    category: 'baby_care',
+                    question: 'Translate: "Change the diaper"',
+                    answer: 'поменяй памперс',
+                    alternatives: ['поменяй памперс', 'смени памперс'],
+                    word: 'па́мперс'
                 },
-                'обка́калась': { 
-                    definition: 'she soiled herself', 
-                    example: 'Она обка́калась с головы до ног (She soiled herself from head to toe)',
-                    forms: 'Фразы: "Вся обка́калась" (Completely soiled herself), "Сильно обка́калась" (Badly soiled herself)'
+                {
+                    type: 'multiple_choice',
+                    category: 'baby_care',
+                    question: 'Как правильно: "У неё ___"',
+                    options: ['отрыжки', 'отрыжка', 'отрыжке', 'отрыжку'],
+                    correct: 1,
+                    word: 'отры́жка'
                 },
-                'памперс': { 
-                    definition: 'diaper', 
-                    example: 'Поменяй памперс, он мокрый (Change the diaper, it is wet)',
-                    forms: 'Фразы: "Чистый памперс" (Clean diaper), "Грязный памперс" (Dirty diaper)'
+                {
+                    type: 'listening',
+                    category: 'baby_care',
+                    question: 'Прослушайте и повторите: "Осторо́жно, она́ сейча́с на тебя́ рыгнёт"',
+                    audio: 'Осторо́жно, она́ сейча́с на тебя́ рыгнёт',
+                    word: 'рыга́ть-рыгну́ть'
                 },
-                'отрыжка': { 
-                    definition: 'burp', 
-                    example: 'У неё отрыжка после кормления (She has a burp after feeding)',
-                    forms: 'Фразы: "Сильная отрыжка" (Strong burp), "Громкая отрыжка" (Loud burp)'
+                {
+                    type: 'fill_blanks',
+                    category: 'baby_care',
+                    question: 'Заполните: "Возьми́ ___"',
+                    answer: 'салфетку',
+                    hint: '(для вытирания)',
+                    word: 'салфе́тка'
                 },
-                'рыгать-рыгнуть': { 
-                    definition: 'to burp', 
-                    example: 'Осторожно, она сейчас на тебя рыгнёт (Careful, she will burp on you now)',
-                    forms: 'Фразы: "Может рыгнуть" (Might burp), "Сейчас рыгнет" (Will burp now)'
+                {
+                    type: 'translation_en_ru',
+                    category: 'baby_care',
+                    question: 'Translate: "Give her the pacifier"',
+                    answer: 'дай ей соску',
+                    alternatives: ['дай ей соску'],
+                    word: 'со́ска'
                 },
-                'салфетка': { 
-                    definition: 'napkin', 
-                    example: 'Возьми салфетку, вытри ей ротик (Take a napkin, wipe her mouth)',
-                    forms: 'Фразы: "Мокрая салфетка" (Wet napkin), "Чистая салфетка" (Clean napkin)'
+                {
+                    type: 'multiple_choice',
+                    category: 'baby_care',
+                    question: 'Что у ребёнка? "У неё ___"',
+                    options: ['колика', 'колики', 'коликов', 'колике'],
+                    correct: 1,
+                    word: 'ко́лики'
                 },
-                'полотенце': { 
-                    definition: 'towel', 
-                    example: 'Возьми полотенце после купания (Take a towel after bathing)',
-                    forms: 'Фразы: "Мягкое полотенце" (Soft towel), "Сухое полотенце" (Dry towel)'
+
+                // Семья (6 заданий)
+                {
+                    type: 'situational',
+                    category: 'family',
+                    question: 'Ситуация: Гульнара́ спрашивает, как дела у вну́чки. Ответь.',
+                    context: 'Ребёнок только что поел и спит.',
+                    expectedElements: ['хорошо', 'поела', 'спит'],
+                    word: 'вну́чка'
                 },
-                'со́ска': { 
-                    definition: 'pacifier', 
-                    example: 'Дай ей со́ску, она успокоится (Give her the pacifier, she will calm down)',
-                    forms: 'Фразы: "Где со́ска?" (Where is the pacifier?), "Потеряла со́ску" (Lost the pacifier)'
+                {
+                    type: 'translation_en_ru',
+                    category: 'family',
+                    question: 'Translate: "Our granddaughter"',
+                    answer: 'наша внучка',
+                    alternatives: ['наша внучка'],
+                    word: 'вну́чка'
                 },
-                'колики': { 
-                    definition: 'colic', 
-                    example: 'У неё колики, поэтому плачет (She has colic, that is why she is crying)',
-                    forms: 'Фразы: "Сильные колики" (Strong colic), "От коликов плачет" (Crying from colic)'
+                {
+                    type: 'fill_blanks',
+                    category: 'family',
+                    question: 'Заполните: "___ игра́ет с ребёнком"',
+                    answer: 'Гульнара',
+                    hint: '(имя свекрови)',
+                    word: 'Гульнара́'
                 },
-                'грудь': { 
-                    definition: 'breast', 
-                    example: 'Она хочет грудь, голодная (She wants breast, she is hungry)',
-                    forms: 'Фразы: "Дай ей грудь" (Give her breast), "Просит грудь" (Asking for breast)'
+                {
+                    type: 'multiple_choice',
+                    category: 'family',
+                    question: 'Кто читает сказку? "___ чита́ет ска́зку"',
+                    options: ['Дедушка', 'Дедушки', 'Дедушке', 'Дедушку'],
+                    correct: 0,
+                    word: 'де́душка'
                 },
-                'корми́ть-покорми́ть': { 
-                    definition: 'to feed', 
-                    example: 'Покорми́ её, она голодная (Feed her, she is hungry)',
-                    forms: 'Фразы: "Время корми́ть" (Time to feed), "Надо покорми́ть" (Need to feed)'
+                {
+                    type: 'translation_ru_en',
+                    category: 'family',
+                    question: 'Переведите: "И́рик де́ржит вну́чку"',
+                    answer: 'irik holds granddaughter',
+                    alternatives: ['irik holds granddaughter', 'irik is holding granddaughter'],
+                    word: 'И́рик'
+                },
+                {
+                    type: 'situational',
+                    category: 'family',
+                    question: 'Ситуация: И́рик спрашивает "Где ба́бушка?" Ответь.',
+                    context: 'Бабушка качает ребёнка в другой комнате.',
+                    expectedElements: ['другой', 'комнате', 'качает'],
+                    word: 'ба́бушка'
+                },
+
+                // Действия (7 заданий)
+                {
+                    type: 'translation_en_ru',
+                    category: 'actions',
+                    question: 'Translate: "She wants to be comforted"',
+                    answer: 'она хочет чтобы её пожалели',
+                    alternatives: ['она хочет чтобы её пожалели'],
+                    word: 'жале́ть-пожале́ть'
+                },
+                {
+                    type: 'grammar_forms',
+                    category: 'actions',
+                    question: 'Поставьте глагол правильно: "Я ___ (держа́ть) ребёнка"',
+                    answer: 'держу',
+                    alternatives: ['держу'],
+                    word: 'держа́ть-подержа́ть'
+                },
+                {
+                    type: 'fill_blanks',
+                    category: 'actions',
+                    question: 'Заполните: "___ её немного"',
+                    answer: 'покачай',
+                    hint: '(кача́ть ребёнка)',
+                    word: 'кача́ть-покача́ть'
+                },
+                {
+                    type: 'translation_en_ru',
+                    category: 'actions',
+                    question: 'Translate: "Put her to sleep"',
+                    answer: 'уложи её спать',
+                    alternatives: ['уложи её спать', 'укладывай её спать'],
+                    word: 'укла́дывать-уложи́ть'
+                },
+                {
+                    type: 'multiple_choice',
+                    category: 'actions',
+                    question: 'Что надо сделать? "Её на́до ___"',
+                    options: ['успокаивать', 'успокоить', 'успокойся', 'успокоила'],
+                    correct: 1,
+                    word: 'успока́ивать-успоко́ить'
+                },
+                {
+                    type: 'translation_ru_en',
+                    category: 'actions',
+                    question: 'Переведите: "Она́ капри́зничает"',
+                    answer: 'she is being fussy',
+                    alternatives: ['she is being fussy', 'she is fussy'],
+                    word: 'капри́зничать'
+                },
+                {
+                    type: 'listening',
+                    category: 'actions',
+                    question: 'Прослушайте и повторите: "Она́ пла́чет"',
+                    audio: 'Она́ пла́чет',
+                    word: 'пла́кать'
+                },
+
+                // Здоровье (5 заданий)
+                {
+                    type: 'multiple_choice',
+                    category: 'health',
+                    question: 'Что болит? "У неё боли́т ___"',
+                    options: ['живот', 'живота', 'животу', 'животом'],
+                    correct: 0,
+                    word: 'живо́т'
+                },
+                {
+                    type: 'translation_en_ru',
+                    category: 'health',
+                    question: 'Translate: "Her stomach hurts"',
+                    answer: 'у неё болит живот',
+                    alternatives: ['у неё болит живот'],
+                    word: 'боле́ть'
+                },
+                {
+                    type: 'fill_blanks',
+                    category: 'health',
+                    question: 'Заполните: "У неё ре́жутся ___"',
+                    answer: 'зубки',
+                    hint: '(что режется у малышей)',
+                    word: 'зу́бки'
+                },
+                {
+                    type: 'translation_ru_en',
+                    category: 'health',
+                    question: 'Переведите: "У неё температу́ра"',
+                    answer: 'she has a fever',
+                    alternatives: ['she has a fever', 'she has temperature'],
+                    word: 'температу́ра'
+                },
+                {
+                    type: 'situational',
+                    category: 'health',
+                    question: 'Ситуация: Ребёнок горячий. Что сказать Гульнаре́?',
+                    context: 'У ребёнка жар и он вялый.',
+                    expectedElements: ['температура', 'горячий', 'жар'],
+                    word: 'температу́ра'
                 }
-            },
-            family: {
-                'внучка': { 
-                    definition: 'granddaughter', 
-                    example: 'Наша внучка (Our granddaughter)',
-                    forms: 'Фразы: "Любимая внучка" (Beloved granddaughter), "Маленькая внучка" (Little granddaughter)'
-                },
-                'Гульнара': { 
-                    definition: 'mother-in-law name', 
-                    example: 'Гульнара помогает (Gulnara is helping)',
-                    forms: 'Фразы: "Гульнара приехала" (Gulnara arrived), "Гульнара играет с ребёнком" (Gulnara plays with the baby)'
-                },
-                'Ирик': { 
-                    definition: 'father-in-law name', 
-                    example: 'Ирик играет с ребёнком (Irik plays with the baby)',
-                    forms: 'Фразы: "Ирик держит внучку" (Irik holds granddaughter), "Ирик читает сказку" (Irik reads a fairy tale)'
-                },
-                'бабушка': { 
-                    definition: 'grandmother', 
-                    example: 'Бабушка качает малышку (Grandmother rocks the little one)',
-                    forms: 'Фразы: "Добрая бабушка" (Kind grandmother), "Бабушка поёт" (Grandmother sings)'
-                },
-                'дедушка': { 
-                    definition: 'grandfather', 
-                    example: 'Дедушка читает сказку (Grandfather reads a fairy tale)',
-                    forms: 'Фразы: "Дедушка играет" (Grandfather plays), "Любимый дедушка" (Beloved grandfather)'
-                }
-            },
-            actions: {
-                'держать-подержать': { 
-                    definition: 'to hold', 
-                    example: 'Я держу ребёнка (I am holding the baby)',
-                    forms: 'Фразы: "Держи крепко" (Hold tight), "Подержи её" (Hold her)'
-                },
-                'кача́ть-покача́ть': { 
-                    definition: 'to rock', 
-                    example: 'Покача́й её (Rock her)',
-                    forms: 'Фразы: "Тихо кача́ть" (Rock quietly), "Кача́ть на руках" (Rock in arms)'
-                },
-                'укладывать-уложить': { 
-                    definition: 'to put to bed', 
-                    example: 'Я её уложил спать (I put her to sleep)',
-                    forms: 'Фразы: "Пора укладывать" (Time to put to bed), "Уложить в кроватку" (Put in crib)'
-                },
-                'жале́ть-пожале́ть': { 
-                    definition: 'to feel sorry for, to comfort', 
-                    example: 'Она хочет, чтобы её пожале́ли (She wants to be comforted)',
-                    forms: 'Фразы: "Пожале́й её" (Comfort her), "Хочет чтобы пожале́ли" (Wants to be comforted)'
-                },
-                'успока́ивать-успоко́ить': { 
-                    definition: 'to calm down', 
-                    example: 'Её надо успоко́ить (She needs to be calmed down)',
-                    forms: 'Фразы: "Попробуй успоко́ить" (Try to calm), "Успоко́й её" (Calm her down)'
-                },
-                'капризничать': { 
-                    definition: 'to be fussy', 
-                    example: 'Она капризничает (She is being fussy)',
-                    forms: 'Фразы: "Перестань капризничать" (Stop being fussy), "Почему капризничает?" (Why is she fussy?)'
-                },
-                'плакать': { 
-                    definition: 'to cry', 
-                    example: 'Она плачет (She is crying)',
-                    forms: 'Фразы: "Сильно плачет" (Crying hard), "Почему плачет?" (Why is she crying?)'
-                }
-            },
-            health: {
-                'болеть': { 
-                    definition: 'to hurt', 
-                    example: 'У неё болит живот (Her stomach hurts)',
-                    forms: 'Фразы: "Что болит?" (What hurts?), "Сильно болит" (Hurts badly)'
-                },
-                'живот': { 
-                    definition: 'stomach', 
-                    example: 'У неё болит живот (Her stomach hurts)',
-                    forms: 'Фразы: "Погладь живот" (Rub the stomach), "Полный живот" (Full stomach)'
-                },
-                'зубки': { 
-                    definition: 'little teeth', 
-                    example: 'У неё режутся зубки (Her teeth are coming in)',
-                    forms: 'Фразы: "Первые зубки" (First teeth), "Болят зубки" (Teeth hurt)'
-                },
-                'температура': { 
-                    definition: 'temperature', 
-                    example: 'У неё температура (She has a fever)',
-                    forms: 'Фразы: "Высокая температура" (High fever), "Мерить температуру" (Take temperature)'
-                }
-            }
-        };
-
-        const sampleTasks = [
-            // Уход за ребёнком (8 заданий)
-            {
-                type: 'translation_ru_en',
-                category: 'baby_care',
-                question: 'Переведите: "Она попи́сала"',
-                answer: 'she peed',
-                alternatives: ['she peed', 'she urinated'],
-                word: 'пи́сать-попи́сать'
-            },
-            {
-                type: 'translation_ru_en',
-                category: 'baby_care',
-                question: 'Переведите: "Она опи́салась"',
-                answer: 'she wet herself',
-                alternatives: ['she wet herself', 'she peed herself'],
-                word: 'опи́салась'
-            },
-            {
-                type: 'translation_en_ru',
-                category: 'baby_care',
-                question: 'Translate: "Change the diaper"',
-                answer: 'поменяй памперс',
-                alternatives: ['поменяй памперс', 'смени памперс'],
-                word: 'памперс'
-            },
-            {
-                type: 'multiple_choice',
-                category: 'baby_care',
-                question: 'Как правильно: "У неё ___"',
-                options: ['отрыжки', 'отрыжка', 'отрыжке', 'отрыжку'],
-                correct: 1,
-                word: 'отрыжка'
-            },
-            {
-                type: 'listening',
-                category: 'baby_care',
-                question: 'Прослушайте и повторите: "Осторожно, она сейчас на тебя рыгнёт"',
-                audio: 'Осторожно, она сейчас на тебя рыгнёт',
-                word: 'рыгать-рыгнуть'
-            },
-            {
-                type: 'fill_blanks',
-                category: 'baby_care',
-                question: 'Заполните: "Возьми ___"',
-                answer: 'салфетку',
-                hint: '(для вытирания)',
-                word: 'салфетка'
-            },
-            {
-                type: 'translation_en_ru',
-                category: 'baby_care',
-                question: 'Translate: "Give her the pacifier"',
-                answer: 'дай ей соску',
-                alternatives: ['дай ей соску'],
-                word: 'со́ска'
-            },
-            {
-                type: 'multiple_choice',
-                category: 'baby_care',
-                question: 'Что у ребёнка? "У неё ___"',
-                options: ['колика', 'колики', 'коликов', 'колике'],
-                correct: 1,
-                word: 'колики'
-            },
-
-            // Семья (6 заданий)
-            {
-                type: 'situational',
-                category: 'family',
-                question: 'Ситуация: Гульнара спрашивает, как дела у внучки. Ответь.',
-                context: 'Ребёнок только что поел и спит.',
-                expectedElements: ['хорошо', 'поела', 'спит'],
-                word: 'внучка'
-            },
-            {
-                type: 'translation_en_ru',
-                category: 'family',
-                question: 'Translate: "Our granddaughter"',
-                answer: 'наша внучка',
-                alternatives: ['наша внучка'],
-                word: 'внучка'
-            },
-            {
-                type: 'fill_blanks',
-                category: 'family',
-                question: 'Заполните: "___ играет с ребёнком"',
-                answer: 'Гульнара',
-                hint: '(имя свекрови)',
-                word: 'Гульнара'
-            },
-            {
-                type: 'multiple_choice',
-                category: 'family',
-                question: 'Кто читает сказку? "___ читает сказку"',
-                options: ['Дедушка', 'Дедушки', 'Дедушке', 'Дедушку'],
-                correct: 0,
-                word: 'дедушка'
-            },
-            {
-                type: 'translation_ru_en',
-                category: 'family',
-                question: 'Переведите: "Ирик держит внучку"',
-                answer: 'irik holds granddaughter',
-                alternatives: ['irik holds granddaughter', 'irik is holding granddaughter'],
-                word: 'Ирик'
-            },
-            {
-                type: 'situational',
-                category: 'family',
-                question: 'Ситуация: Ирик спрашивает "Где бабушка?" Ответь.',
-                context: 'Бабушка качает ребёнка в другой комнате.',
-                expectedElements: ['другой', 'комнате', 'качает'],
-                word: 'бабушка'
-            },
-
-            // Действия (7 заданий)
-            {
-                type: 'translation_en_ru',
-                category: 'actions',
-                question: 'Translate: "She wants to be comforted"',
-                answer: 'она хочет чтобы её пожалели',
-                alternatives: ['она хочет чтобы её пожалели'],
-                word: 'жале́ть-пожале́ть'
-            },
-            {
-                type: 'grammar_forms',
-                category: 'actions',
-                question: 'Поставьте глагол правильно: "Я ___ (держать) ребёнка"',
-                answer: 'держу',
-                alternatives: ['держу'],
-                word: 'держать-подержать'
-            },
-            {
-                type: 'fill_blanks',
-                category: 'actions',
-                question: 'Заполните: "___ её немного"',
-                answer: 'покачай',
-                hint: '(качать ребёнка)',
-                word: 'кача́ть-покача́ть'
-            },
-            {
-                type: 'translation_en_ru',
-                category: 'actions',
-                question: 'Translate: "Put her to sleep"',
-                answer: 'уложи её спать',
-                alternatives: ['уложи её спать', 'укладывай её спать'],
-                word: 'укладывать-уложить'
-            },
-            {
-                type: 'multiple_choice',
-                category: 'actions',
-                question: 'Что надо сделать? "Её надо ___"',
-                options: ['успока́ивать', 'успоко́ить', 'успокойся', 'успокоила'],
-                correct: 1,
-                word: 'успока́ивать-успоко́ить'
-            },
-            {
-                type: 'translation_ru_en',
-                category: 'actions',
-                question: 'Переведите: "Она капризничает"',
-                answer: 'she is being fussy',
-                alternatives: ['she is being fussy', 'she is fussy'],
-                word: 'капризничать'
-            },
-            {
-                type: 'listening',
-                category: 'actions',
-                question: 'Прослушайте и повторите: "Она плачет"',
-                audio: 'Она плачет',
-                word: 'плакать'
-            },
-
-            // Здоровье (5 заданий)
-            {
-                type: 'multiple_choice',
-                category: 'health',
-                question: 'Что болит? "У неё болит ___"',
-                options: ['живот', 'живота', 'животу', 'животом'],
-                correct: 0,
-                word: 'живот'
-            },
-            {
-                type: 'translation_en_ru',
-                category: 'health',
-                question: 'Translate: "Her stomach hurts"',
-                answer: 'у неё болит живот',
-                alternatives: ['у неё болит живот'],
-                word: 'болеть'
-            },
-            {
-                type: 'fill_blanks',
-                category: 'health',
-                question: 'Заполните: "У неё режутся ___"',
-                answer: 'зубки',
-                hint: '(что режется у малышей)',
-                word: 'зубки'
-            },
-            {
-                type: 'translation_ru_en',
-                category: 'health',
-                question: 'Переведите: "У неё температура"',
-                answer: 'she has a fever',
-                alternatives: ['she has a fever', 'she has temperature'],
-                word: 'температура'
-            },
-            {
-                type: 'situational',
-                category: 'health',
-                question: 'Ситуация: Ребёнок горячий. Что сказать Гульнаре?',
-                context: 'У ребёнка жар и он вялый.',
-                expectedElements: ['температура', 'горячий', 'жар'],
-                word: 'температура'
-            }
-        ];
-
-        const generateRandomTask = () => {
-            const filteredTasks = selectedCategory === 'all' 
-                ? sampleTasks 
-                : sampleTasks.filter(task => task.category === selectedCategory);
-            
-            const randomTask = filteredTasks[Math.floor(Math.random() * filteredTasks.length)];
-            setCurrentTask({...randomTask, id: Date.now()});
-            setUserAnswer('');
-            setShowResult(null);
-        };
-
-        const checkAnswer = () => {
-            if (!currentTask) return;
-            
-            let isCorrect = false;
-            
-            switch(currentTask.type) {
-                case 'multiple_choice':
-                    isCorrect = parseInt(userAnswer) === currentTask.correct;
-                    break;
-                case 'translation_ru_en':
-                case 'translation_en_ru':
-                case 'fill_blanks':
-                case 'grammar_forms':
-                    const normalizedAnswer = userAnswer.toLowerCase().trim();
-                    if (currentTask.alternatives) {
-                        isCorrect = currentTask.alternatives.some(alt => 
-                            alt.toLowerCase() === normalizedAnswer
-                        );
-                    } else {
-                        isCorrect = normalizedAnswer === currentTask.answer.toLowerCase();
+            ];            const vocabulary = {
+                baby_care: {
+                    'пи́сать-попи́сать': { 
+                        definition: 'to urinate', 
+                        example: 'Она попи́сала. Нужно поменять памперс. (She peed. Need to change the diaper.)',
+                        forms: 'Фразы: "Она хочет пи́сать" (She wants to pee), "Только что попи́сала" (Just peed)'
+                    },
+                    'ка́кать-пока́кать': { 
+                        definition: 'to defecate', 
+                        example: 'Она пока́кала. Памперс грязный. (She pooped. The diaper is dirty.)',
+                        forms: 'Фразы: "Сейчас будет ка́кать" (About to poop), "Уже пока́кала" (Already pooped)'
+                    },
+                    'опи́салась': { 
+                        definition: 'she wet herself', 
+                        example: 'Она опи́салась во сне (She wet herself in her sleep)',
+                        forms: 'Фразы: "Вся опи́салась" (Completely wet herself), "Опять опи́салась" (Wet herself again)'
+                    },
+                    'обка́калась': { 
+                        definition: 'she soiled herself', 
+                        example: 'Она обка́калась с головы до ног (She soiled herself from head to toe)',
+                        forms: 'Фразы: "Вся обка́калась" (Completely soiled herself), "Сильно обка́калась" (Badly soiled herself)'
+                    },
+                    'па́мперс': { 
+                        definition: 'diaper', 
+                        example: 'Поменя́й па́мперс, он мо́крый (Change the diaper, it is wet)',
+                        forms: 'Фразы: "Чи́стый па́мперс" (Clean diaper), "Гря́зный па́мперс" (Dirty diaper)'
+                    },
+                    'отры́жка': { 
+                        definition: 'burp', 
+                        example: 'У неё отры́жка после кормле́ния (She has a burp after feeding)',
+                        forms: 'Фразы: "Си́льная отры́жка" (Strong burp), "Гро́мкая отры́жка" (Loud burp)'
+                    },
+                    'рыга́ть-рыгну́ть': { 
+                        definition: 'to burp', 
+                        example: 'Осторо́жно, она сейча́с на тебя́ рыгнёт (Careful, she will burp on you now)',
+                        forms: 'Фразы: "Мо́жет рыгну́ть" (Might burp), "Сейча́с рыгнет" (Will burp now)'
+                    },
+                    'салфе́тка': { 
+                        definition: 'napkin', 
+                        example: 'Возьми́ салфе́тку, вы́три ей ро́тик (Take a napkin, wipe her mouth)',
+                        forms: 'Фразы: "Мо́края салфе́тка" (Wet napkin), "Чи́стая салфе́тка" (Clean napkin)'
+                    },
+                    'полоте́нце': { 
+                        definition: 'towel', 
+                        example: 'Возьми́ полоте́нце по́сле купа́ния (Take a towel after bathing)',
+                        forms: 'Фразы: "Мя́гкое полоте́нце" (Soft towel), "Сухо́е полоте́нце" (Dry towel)'
+                    },
+                    'со́ска': { 
+                        definition: 'pacifier', 
+                        example: 'Дай ей со́ску, она́ успоко́ится (Give her the pacifier, she will calm down)',
+                        forms: 'Фразы: "Где со́ска?" (Where is the pacifier?), "Потеря́ла со́ску" (Lost the pacifier)'
+                    },
+                    'ко́лики': { 
+                        definition: 'colic', 
+                        example: 'У неё ко́лики, поэ́тому пла́чет (She has colic, that is why she is crying)',
+                        forms: 'Фразы: "Си́льные ко́лики" (Strong colic), "От ко́ликов пла́чет" (Crying from colic)'
+                    },
+                    'грудь': { 
+                        definition: 'breast', 
+                        example: 'Она́ хо́чет грудь, голо́дная (She wants breast, she is hungry)',
+                        forms: 'Фразы: "Дай ей грудь" (Give her breast), "Про́сит грудь" (Asking for breast)'
+                    },
+                    'корми́ть-покорми́ть': { 
+                        definition: 'to feed', 
+                        example: 'Покорми́ её, она́ голо́дная (Feed her, she is hungry)',
+                        forms: 'Фразы: "Вре́мя корми́ть" (Time to feed), "На́до покорми́ть" (Need to feed)'
                     }
-                    break;
-                case 'situational':
-                    isCorrect = currentTask.expectedElements.some(element =>
-                        userAnswer.toLowerCase().includes(element.toLowerCase())
-                    );
-                    break;
-                default:
-                    isCorrect = true;
-            }
-            
-            setScore(prev => ({
-                correct: prev.correct + (isCorrect ? 1 :
-```
+                },
