@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Русские глаголы</title>
+    <title>Русский язык для семьи</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -21,6 +21,7 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
+        // Lucide icons as simple SVG components
         const Mic = ({ size = 20, className = "" }) => (
             <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
@@ -72,10 +73,9 @@
             </svg>
         );
 
-        const Book = ({ size = 28, className = "" }) => (
+        const Baby = ({ size = 28, className = "" }) => (
             <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                <path d="M9 12h6m-6 4h6m3-10H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z"></path>
             </svg>
         );
 
@@ -94,7 +94,7 @@
             </svg>
         );
 
-        const RussianVerbsApp = () => {
+        const RussianFamilyApp = () => {
             const [currentTask, setCurrentTask] = useState(null);
             const [userAnswer, setUserAnswer] = useState('');
             const [showResult, setShowResult] = useState(null);
@@ -107,78 +107,376 @@
             const audioChunksRef = useRef([]);
 
             const vocabulary = {
-                ostavatsya: {
-                    'оставаться-остаться': {
-                        definition: 'to remain, to stay (in a place or situation)',
-                        example: 'Я останусь дома сегодня (I will stay home today)',
-                        forms: 'Формы: "я останусь" (I will stay), "он остался" (he stayed), "мы оставались" (we were staying)',
-                        phrases: ['Я останусь дома', 'Он остался работать', 'Останься со мной']
+                baby_care: {
+                    'пи́сать-попи́сать': { 
+                        definition: 'to urinate', 
+                        example: 'Она попи́сала. Нужно поменять па́мперс. (She peed. Need to change the diaper.)',
+                        forms: 'Фразы: "Она хо́чет пи́сать" (She wants to pee), "То́лько что попи́сала" (Just peed)',
+                        phrases: ['Она хо́чет пи́сать', 'То́лько что попи́сала']
                     },
-                    'остаться на ночь': {
-                        definition: 'to stay overnight',
-                        example: 'Мы остались в Москве на месяц (We stayed in Moscow for a month)',
-                        forms: 'Контекст: используется когда человек продолжает быть в месте или ситуации',
-                        phrases: ['Остаться на ночь', 'Остаться в городе', 'Остаться одному']
+                    'ка́кать-пока́кать': { 
+                        definition: 'to defecate', 
+                        example: 'Она пока́кала. Па́мперс гря́зный. (She pooped. The diaper is dirty.)',
+                        forms: 'Фразы: "Сейча́с бу́дет ка́кать" (About to poop), "Уже́ пока́кала" (Already pooped)',
+                        phrases: ['Сейча́с бу́дет ка́кать', 'Уже́ пока́кала']
+                    },
+                    'опи́салась': { 
+                        definition: 'she wet herself', 
+                        example: 'Она опи́салась во сне (She wet herself in her sleep)',
+                        forms: 'Фразы: "Вся опи́салась" (Completely wet herself), "Опя́ть опи́салась" (Wet herself again)',
+                        phrases: ['Вся опи́салась', 'Опя́ть опи́салась']
+                    },
+                    'обка́калась': { 
+                        definition: 'she soiled herself', 
+                        example: 'Она обка́калась с головы́ до ног (She soiled herself from head to toe)',
+                        forms: 'Фразы: "Вся обка́калась" (Completely soiled herself), "Си́льно обка́калась" (Badly soiled herself)',
+                        phrases: ['Вся обка́калась', 'Си́льно обка́калась']
+                    },
+                    'па́мперс': { 
+                        definition: 'diaper', 
+                        example: 'Поменя́й па́мперс, он мо́крый (Change the diaper, it is wet)',
+                        forms: 'Фразы: "Чи́стый па́мперс" (Clean diaper), "Гря́зный па́мперс" (Dirty diaper)',
+                        phrases: ['Чи́стый па́мперс', 'Гря́зный па́мперс']
+                    },
+                    'отры́жка': { 
+                        definition: 'burp', 
+                        example: 'У неё отры́жка по́сле кормле́ния (She has a burp after feeding)',
+                        forms: 'Фразы: "Си́льная отры́жка" (Strong burp), "Гро́мкая отры́жка" (Loud burp)',
+                        phrases: ['Си́льная отры́жка', 'Гро́мкая отры́жка']
+                    },
+                    'рыга́ть-рыгну́ть': { 
+                        definition: 'to burp', 
+                        example: 'Осторо́жно, она сейча́с на тебя́ рыгнёт (Careful, she will burp on you now)',
+                        forms: 'Фразы: "Мо́жет рыгну́ть" (Might burp), "Сейча́с рыгнет" (Will burp now)',
+                        phrases: ['Мо́жет рыгну́ть', 'Сейча́с рыгнет']
+                    },
+                    'салфе́тка': { 
+                        definition: 'napkin', 
+                        example: 'Возьми́ салфе́тку, вы́три ей ро́тик (Take a napkin, wipe her mouth)',
+                        forms: 'Фразы: "Мо́края салфе́тка" (Wet napkin), "Чи́стая салфе́тка" (Clean napkin)',
+                        phrases: ['Мо́края салфе́тка', 'Чи́стая салфе́тка']
+                    },
+                    'полоте́нце': { 
+                        definition: 'towel', 
+                        example: 'Возьми́ полоте́нце по́сле купа́ния (Take a towel after bathing)',
+                        forms: 'Фразы: "Мя́гкое полоте́нце" (Soft towel), "Сухо́е полоте́нце" (Dry towel)',
+                        phrases: ['Мя́гкое полоте́нце', 'Сухо́е полоте́нце']
+                    },
+                    'со́ска': { 
+                        definition: 'pacifier', 
+                        example: 'Дай ей со́ску, она́ успоко́ится (Give her the pacifier, she will calm down)',
+                        forms: 'Фразы: "Где со́ска?" (Where is the pacifier?), "Потеря́ла со́ску" (Lost the pacifier)',
+                        phrases: ['Где со́ска?', 'Потеря́ла со́ску']
+                    },
+                    'ко́лики': { 
+                        definition: 'colic', 
+                        example: 'У неё ко́лики, поэ́тому пла́чет (She has colic, that is why she is crying)',
+                        forms: 'Фразы: "Си́льные ко́лики" (Strong colic), "От ко́ликов пла́чет" (Crying from colic)',
+                        phrases: ['Си́льные ко́лики', 'От ко́ликов пла́чет']
+                    },
+                    'грудь': { 
+                        definition: 'breast', 
+                        example: 'Она́ хо́чет грудь, голо́дная (She wants breast, she is hungry)',
+                        forms: 'Фразы: "Дай ей грудь" (Give her breast), "Про́сит грудь" (Asking for breast)',
+                        phrases: ['Дай ей грудь', 'Про́сит грудь']
+                    },
+                    'корми́ть-покорми́ть': { 
+                        definition: 'to feed', 
+                        example: 'Покорми́ её, она́ голо́дная (Feed her, she is hungry)',
+                        forms: 'Фразы: "Вре́мя корми́ть" (Time to feed), "На́до покорми́ть" (Need to feed)',
+                        phrases: ['Вре́мя корми́ть', 'На́до покорми́ть']
                     }
                 },
-                ostanavlivatsya: {
-                    'останавливаться-остановиться': {
-                        definition: 'to stop (moving); to stay at (hotel/place temporarily)',
-                        example: 'Автобус остановился на светофоре (The bus stopped at the traffic light)',
-                        forms: 'Формы: "я остановлюсь" (I will stop), "он остановился" (he stopped), "останови!" (stop!)',
-                        phrases: ['Останови машину!', 'Он остановился', 'Где вы остановились?']
+                family: {
+                    'вну́чка': { 
+                        definition: 'granddaughter', 
+                        example: 'На́ша вну́чка (Our granddaughter)',
+                        forms: 'Фразы: "Люби́мая вну́чка" (Beloved granddaughter), "Ма́ленькая вну́чка" (Little granddaughter)',
+                        phrases: ['Люби́мая вну́чка', 'Ма́ленькая вну́чка']
                     },
-                    'остановиться в отеле': {
-                        definition: 'to stay at a hotel',
-                        example: 'Мы остановились в отеле (We are staying at a hotel)',
-                        forms: 'Контекст: для временного проживания ИЛИ прекращения движения',
-                        phrases: ['Остановиться в гостинице', 'Остановиться на секунду', 'Не останавливайся!']
+                    'ба́бушка': { 
+                        definition: 'grandmother', 
+                        example: 'Ба́бушка помога́ет с ребёнком (Grandmother helps with the baby)',
+                        forms: 'Фразы: "До́брая ба́бушка" (Kind grandmother), "Ба́бушка кача́ет малы́шку" (Grandmother rocks the little one)',
+                        phrases: ['До́брая ба́бушка', 'Ба́бушка кача́ет малы́шку']
+                    },
+                    'де́душка': { 
+                        definition: 'grandfather', 
+                        example: 'Де́душка игра́ет с ребёнком (Grandfather plays with the baby)',
+                        forms: 'Фразы: "Де́душка де́ржит вну́чку" (Grandfather holds granddaughter), "Де́душка чита́ет ска́зку" (Grandfather reads a fairy tale)',
+                        phrases: ['Де́душка де́ржит вну́чку', 'Де́душка чита́ет ска́зку']
                     }
                 },
-                stanovitsya: {
-                    'становиться-стать': {
-                        definition: 'to become (change into something); to start being',
-                        example: 'Она стала учителем (She became a teacher)',
-                        forms: 'Формы: "я стану" (I will become), "он стал" (he became), "стань!" (become!)',
-                        phrases: ['Я стану врачом', 'Стало темно', 'Он становится лучше']
+                actions: {
+                    'держа́ть-подержа́ть': { 
+                        definition: 'to hold', 
+                        example: 'Я держу́ ребёнка (I am holding the baby)',
+                        forms: 'Фразы: "Держи́ кре́пко" (Hold tight), "Подержи́ её" (Hold her)',
+                        phrases: ['Держи́ кре́пко', 'Подержи́ её']
                     },
-                    'стать взрослым': {
-                        definition: 'to become an adult',
-                        example: 'Погода становится холоднее (The weather is getting colder)',
-                        forms: 'Контекст: изменение состояния или профессии, превращение в что-то другое',
-                        phrases: ['Стать известным', 'Стать другом', 'Стало холодно']
+                    'кача́ть-покача́ть': { 
+                        definition: 'to rock', 
+                        example: 'Покача́й её (Rock her)',
+                        forms: 'Фразы: "Ти́хо кача́ть" (Rock quietly), "Кача́ть на рука́х" (Rock in arms)',
+                        phrases: ['Ти́хо кача́ть', 'Кача́ть на рука́х']
+                    },
+                    'укла́дывать-уложи́ть': { 
+                        definition: 'to put to bed', 
+                        example: 'Я её уложи́л спать (I put her to sleep)',
+                        forms: 'Фразы: "Пора́ укла́дывать" (Time to put to bed), "Уложи́ть в крова́тку" (Put in crib)',
+                        phrases: ['Пора́ укла́дывать', 'Уложи́ть в крова́тку']
+                    },
+                    'жале́ть-пожале́ть': { 
+                        definition: 'to feel sorry for, to comfort', 
+                        example: 'Она́ хо́чет, что́бы её пожале́ли (She wants to be comforted)',
+                        forms: 'Фразы: "Пожале́й её" (Comfort her), "Хо́чет что́бы пожале́ли" (Wants to be comforted)',
+                        phrases: ['Пожале́й её', 'Хо́чет что́бы пожале́ли']
+                    },
+                    'успока́ивать-успоко́ить': { 
+                        definition: 'to calm down', 
+                        example: 'Её на́до успоко́ить (She needs to be calmed down)',
+                        forms: 'Фразы: "Попро́буй успоко́ить" (Try to calm), "Успоко́й её" (Calm her down)',
+                        phrases: ['Попро́буй успоко́ить', 'Успоко́й её']
+                    },
+                    'капри́зничать': { 
+                        definition: 'to be fussy', 
+                        example: 'Она́ капри́зничает (She is being fussy)',
+                        forms: 'Фразы: "Переста́нь капри́зничать" (Stop being fussy), "Почему́ капри́зничает?" (Why is she fussy?)',
+                        phrases: ['Переста́нь капри́зничать', 'Почему́ капри́зничает?']
+                    },
+                    'пла́кать': { 
+                        definition: 'to cry', 
+                        example: 'Она́ пла́чет (She is crying)',
+                        forms: 'Фразы: "Си́льно пла́чет" (Crying hard), "Почему́ пла́чет?" (Why is she crying?)',
+                        phrases: ['Си́льно пла́чет', 'Почему́ пла́чет?']
+                    }
+                },
+                health: {
+                    'боле́ть': { 
+                        definition: 'to hurt', 
+                        example: 'У неё боли́т живо́т (Her stomach hurts)',
+                        forms: 'Фразы: "Что боли́т?" (What hurts?), "Си́льно боли́т" (Hurts badly)',
+                        phrases: ['Что боли́т?', 'Си́льно боли́т']
+                    },
+                    'живо́т': { 
+                        definition: 'stomach', 
+                        example: 'У неё боли́т живо́т (Her stomach hurts)',
+                        forms: 'Фразы: "Погла́дь живо́т" (Rub the stomach), "По́лный живо́т" (Full stomach)',
+                        phrases: ['Погла́дь живо́т', 'По́лный живо́т']
+                    },
+                    'зу́бки': { 
+                        definition: 'little teeth', 
+                        example: 'У неё ре́жутся зу́бки (Her teeth are coming in)',
+                        forms: 'Фразы: "Пе́рвые зу́бки" (First teeth), "Боля́т зу́бки" (Teeth hurt)',
+                        phrases: ['Пе́рвые зу́бки', 'Боля́т зу́бки']
+                    },
+                    'температу́ра': { 
+                        definition: 'temperature', 
+                        example: 'У неё температу́ра (She has a fever)',
+                        forms: 'Фразы: "Высо́кая температу́ра" (High fever), "Ме́рить температу́ру" (Take temperature)',
+                        phrases: ['Высо́кая температу́ра', 'Ме́рить температу́ру']
                     }
                 }
             };
 
             const sampleTasks = [
-                {type:'translation_en_ru',category:'ostavatsya',question:'Translate: "I will stay home today"',answer:'я останусь дома сегодня',alternatives:['я останусь дома сегодня','сегодня я останусь дома'],word:'оставаться-остаться'},
-                {type:'translation_ru_en',category:'ostavatsya',question:'Переведите: "Мы остались в Москве на месяц"',answer:'we stayed in moscow for a month',alternatives:['we stayed in moscow for a month','we remained in moscow for a month'],word:'оставаться-остаться'},
-                {type:'multiple_choice',category:'ostavatsya',question:'Я ___ дома вчера',options:['остался','остановился','стал','оставался'],correct:0,word:'оставаться-остаться'},
-                {type:'fill_blanks',category:'ostavatsya',question:'Заполните: "Он ___ работать после уроков"',answer:'остался',hint:'(perfective aspect, past tense)',word:'оставаться-остаться'},
-                {type:'translation_en_ru',category:'ostavatsya',question:'Translate: "Stay with me" (imperative)',answer:'останься со мной',alternatives:['останься со мной','оставайся со мной'],word:'оставаться-остаться'},
-                {type:'situational',category:'ostavatsya',question:'Ситуация: Ваш друг уезжает. Вы хотите, чтобы он остался. Что сказать?',context:'Выразите просьбу в императиве',expectedElements:['останься','оставайся'],word:'оставаться-остаться'},
-                {type:'listening',category:'ostavatsya',question:'Прослушайте и повторите: "Я оставался там всю неделю"',audio:'Я оставался там всю неделю',word:'оставаться-остаться'},
-                {type:'multiple_choice',category:'ostavatsya',question:'Завтра я ___ дома (future tense)',options:['останусь','остановлюсь','стану','буду оставаться'],correct:0,word:'оставаться-остаться'},
-                {type:'translation_en_ru',category:'ostanavlivatsya',question:'Translate: "The bus stopped at the traffic light"',answer:'автобус остановился на светофоре',alternatives:['автобус остановился на светофоре'],word:'останавливаться-остановиться'},
-                {type:'translation_ru_en',category:'ostanavlivatsya',question:'Переведите: "Где вы остановились?"',answer:'where are you staying',alternatives:['where are you staying','where did you stop'],word:'останавливаться-остановиться'},
-                {type:'multiple_choice',category:'ostanavlivatsya',question:'Мы ___ в отеле (staying at a hotel)',options:['остановились','остались','стали','останавливались'],correct:0,word:'останавливаться-остановиться'},
-                {type:'fill_blanks',category:'ostanavlivatsya',question:'Заполните: "___ машину!" (imperative)',answer:'останови',hint:'(stop the car!)',word:'останавливаться-остановиться'},
-                {type:'translation_en_ru',category:'ostanavlivatsya',question:'Translate: "Don\'t stop!" (imperative)',answer:'не останавливайся',alternatives:['не останавливайся','не останавливайтесь'],word:'останавливаться-остановиться'},
-                {type:'situational',category:'ostanavlivatsya',question:'Ситуация: Вы приехали в новый город. Друг спрашивает где вы живете. Что ответить?',context:'Вы в гостинице "Москва"',expectedElements:['остановился','остановилась','гостинице','отеле'],word:'останавливаться-остановиться'},
-                {type:'listening',category:'ostanavlivatsya',question:'Прослушайте и повторите: "Он остановился и посмотрел назад"',audio:'Он остановился и посмотрел назад',word:'останавливаться-остановиться'},
-                {type:'multiple_choice',category:'ostanavlivatsya',question:'Такси ___ у подъезда (past tense)',options:['остановилось','осталось','стало','останавливалось'],correct:0,word:'останавливаться-остановиться'},
-                {type:'translation_en_ru',category:'stanovitsya',question:'Translate: "She became a teacher"',answer:'она стала учителем',alternatives:['она стала учителем','она стала учительницей'],word:'становиться-стать'},
-                {type:'translation_ru_en',category:'stanovitsya',question:'Переведите: "Я стану врачом"',answer:'i will become a doctor',alternatives:['i will become a doctor'],word:'становиться-стать'},
-                {type:'multiple_choice',category:'stanovitsya',question:'___ темно (It became dark)',options:['Стало','Остало','Остановилось','Становилось'],correct:0,word:'становиться-стать'},
-                {type:'fill_blanks',category:'stanovitsya',question:'Заполните: "Он ___ все лучше"',answer:'становится',hint:'(imperfective, present tense)',word:'становиться-стать'},
-                {type:'translation_en_ru',category:'stanovitsya',question:'Translate: "The weather is getting colder"',answer:'погода становится холоднее',alternatives:['погода становится холоднее','становится холоднее'],word:'становиться-стать'},
-                {type:'situational',category:'stanovitsya',question:'Ситуация: Ваш друг спрашивает о ваших планах на будущее. Вы хотите быть инженером.',context:'Расскажите о своей профессии в будущем',expectedElements:['стану','инженером'],word:'становиться-стать'},
-                {type:'listening',category:'stanovitsya',question:'Прослушайте и повторите: "Стань на место!"',audio:'Стань на место!',word:'становиться-стать'},
-                {type:'multiple_choice',category:'stanovitsya',question:'Мой брат хочет ___ программистом',options:['стать','остаться','остановиться','становиться'],correct:0,word:'становиться-стать'},
-                {type:'multiple_choice',category:'all',question:'Я хочу ___ дома и отдохнуть',options:['остаться','остановиться','стать'],correct:0,word:'mixed'},
-                {type:'multiple_choice',category:'all',question:'Мы ___ в центре города, в гостинице',options:['остановились','остались','стали'],correct:0,word:'mixed'},
-                {type:'multiple_choice',category:'all',question:'Он ___ известным актером',options:['стал','остался','остановился'],correct:0,word:'mixed'}
+                // Уход за ребёнком (8 заданий)
+                {
+                    type: 'translation_ru_en',
+                    category: 'baby_care',
+                    question: 'Переведите: "Она попи́сала"',
+                    answer: 'she peed',
+                    alternatives: ['she peed', 'she urinated'],
+                    word: 'пи́сать-попи́сать'
+                },
+                {
+                    type: 'translation_ru_en',
+                    category: 'baby_care',
+                    question: 'Переведите: "Она опи́салась"',
+                    answer: 'she wet herself',
+                    alternatives: ['she wet herself', 'she peed herself'],
+                    word: 'опи́салась'
+                },
+                {
+                    type: 'translation_en_ru',
+                    category: 'baby_care',
+                    question: 'Translate: "Change the diaper"',
+                    answer: 'поменяй памперс',
+                    alternatives: ['поменяй памперс', 'смени памперс'],
+                    word: 'па́мперс'
+                },
+                {
+                    type: 'multiple_choice',
+                    category: 'baby_care',
+                    question: 'Как правильно: "У неё ___"',
+                    options: ['отрыжки', 'отрыжка', 'отрыжке', 'отрыжку'],
+                    correct: 1,
+                    word: 'отры́жка'
+                },
+                {
+                    type: 'listening',
+                    category: 'baby_care',
+                    question: 'Прослушайте и повторите: "Осторо́жно, она́ сейча́с на тебя́ рыгнёт"',
+                    audio: 'Осторо́жно, она́ сейча́с на тебя́ рыгнёт',
+                    word: 'рыга́ть-рыгну́ть'
+                },
+                {
+                    type: 'fill_blanks',
+                    category: 'baby_care',
+                    question: 'Заполните: "Возьми́ ___"',
+                    answer: 'салфетку',
+                    hint: '(для вытирания)',
+                    word: 'салфе́тка'
+                },
+                {
+                    type: 'translation_en_ru',
+                    category: 'baby_care',
+                    question: 'Translate: "Give her the pacifier"',
+                    answer: 'дай ей соску',
+                    alternatives: ['дай ей соску'],
+                    word: 'со́ска'
+                },
+                {
+                    type: 'multiple_choice',
+                    category: 'baby_care',
+                    question: 'Что у ребёнка? "У неё ___"',
+                    options: ['колика', 'колики', 'коликов', 'колике'],
+                    correct: 1,
+                    word: 'ко́лики'
+                },
+
+                // Семья (4 задания)
+                {
+                    type: 'situational',
+                    category: 'family',
+                    question: 'Ситуация: Ба́бушка спра́шивает, как дела́ у вну́чки. Отве́ть.',
+                    context: 'Ребёнок то́лько что пое́л и спит.',
+                    expectedElements: ['хорошо', 'поела', 'спит'],
+                    word: 'вну́чка'
+                },
+                {
+                    type: 'translation_en_ru',
+                    category: 'family',
+                    question: 'Translate: "Our granddaughter"',
+                    answer: 'наша внучка',
+                    alternatives: ['наша внучка'],
+                    word: 'вну́чка'
+                },
+                {
+                    type: 'multiple_choice',
+                    category: 'family',
+                    question: 'Кто чита́ет ска́зку? "___ чита́ет ска́зку"',
+                    options: ['Дедушка', 'Дедушки', 'Дедушке', 'Дедушку'],
+                    correct: 0,
+                    word: 'де́душка'
+                },
+                {
+                    type: 'situational',
+                    category: 'family',
+                    question: 'Ситуация: Де́душка спра́шивает "Где ба́бушка?" Отве́ть.',
+                    context: 'Ба́бушка кача́ет ребёнка в друго́й ко́мнате.',
+                    expectedElements: ['другой', 'комнате', 'качает'],
+                    word: 'ба́бушка'
+                },
+
+                // Действия (7 заданий)
+                {
+                    type: 'translation_en_ru',
+                    category: 'actions',
+                    question: 'Translate: "She wants to be comforted"',
+                    answer: 'она хочет чтобы её пожалели',
+                    alternatives: ['она хочет чтобы её пожалели'],
+                    word: 'жале́ть-пожале́ть'
+                },
+                {
+                    type: 'grammar_forms',
+                    category: 'actions',
+                    question: 'Поста́вьте глаго́л пра́вильно: "Я ___ (держа́ть) ребёнка"',
+                    answer: 'держу',
+                    alternatives: ['держу'],
+                    word: 'держа́ть-подержа́ть'
+                },
+                {
+                    type: 'fill_blanks',
+                    category: 'actions',
+                    question: 'Заполните: "___ её немно́го"',
+                    answer: 'покачай',
+                    hint: '(кача́ть ребёнка)',
+                    word: 'кача́ть-покача́ть'
+                },
+                {
+                    type: 'translation_en_ru',
+                    category: 'actions',
+                    question: 'Translate: "Put her to sleep"',
+                    answer: 'уложи её спать',
+                    alternatives: ['уложи её спать', 'укладывай её спать'],
+                    word: 'укла́дывать-уложи́ть'
+                },
+                {
+                    type: 'multiple_choice',
+                    category: 'actions',
+                    question: 'Что на́до сде́лать? "Её на́до ___"',
+                    options: ['успокаивать', 'успокоить', 'успокойся', 'успокоила'],
+                    correct: 1,
+                    word: 'успока́ивать-успоко́ить'
+                },
+                {
+                    type: 'translation_ru_en',
+                    category: 'actions',
+                    question: 'Переведите: "Она́ капри́зничает"',
+                    answer: 'she is being fussy',
+                    alternatives: ['she is being fussy', 'she is fussy'],
+                    word: 'капри́зничать'
+                },
+                {
+                    type: 'listening',
+                    category: 'actions',
+                    question: 'Прослушайте и повторите: "Она́ пла́чет"',
+                    audio: 'Она́ пла́чет',
+                    word: 'пла́кать'
+                },
+
+                // Здоровье (5 заданий)
+                {
+                    type: 'multiple_choice',
+                    category: 'health',
+                    question: 'Что боли́т? "У неё боли́т ___"',
+                    options: ['живот', 'живота', 'животу', 'животом'],
+                    correct: 0,
+                    word: 'живо́т'
+                },
+                {
+                    type: 'translation_en_ru',
+                    category: 'health',
+                    question: 'Translate: "Her stomach hurts"',
+                    answer: 'у неё болит живот',
+                    alternatives: ['у неё болит живот'],
+                    word: 'боле́ть'
+                },
+                {
+                    type: 'fill_blanks',
+                    category: 'health',
+                    question: 'Заполните: "У неё ре́жутся ___"',
+                    answer: 'зубки',
+                    hint: '(что ре́жется у малыше́й)',
+                    word: 'зу́бки'
+                },
+                {
+                    type: 'translation_ru_en',
+                    category: 'health',
+                    question: 'Переведите: "У неё температу́ра"',
+                    answer: 'she has a fever',
+                    alternatives: ['she has a fever', 'she has temperature'],
+                    word: 'температу́ра'
+                },
+                {
+                    type: 'situational',
+                    category: 'health',
+                    question: 'Ситуация: Ребёнок горя́чий. Что сказа́ть ба́бушке?',
+                    context: 'У ребёнка жар и он вя́лый.',
+                    expectedElements: ['температура', 'горячий', 'жар'],
+                    word: 'температу́ра'
+                }
             ];
 
             const generateRandomTask = () => {
@@ -229,34 +527,65 @@
                 }));
                 
                 setShowResult(isCorrect);
+                
+                // Убираем автоматическое переключение на следующее задание
+                // Пользователь сам нажмет кнопку "Новое задание"
             };
 
             const speakText = (text) => {
                 if ('speechSynthesis' in window) {
+                    // Останавливаем предыдущее воспроизведение
                     window.speechSynthesis.cancel();
                     
                     const utterance = new SpeechSynthesisUtterance(text);
+                    
+                    // Настройки для лучшего русского произношения
                     utterance.lang = 'ru-RU';
-                    utterance.rate = 0.7;
+                    utterance.rate = 0.7; // Медленнее для четкости
                     utterance.pitch = 1.0;
                     utterance.volume = 1.0;
                     
+                    // Ждем загрузки голосов
                     const setVoice = () => {
                         const voices = window.speechSynthesis.getVoices();
+                        console.log('Доступные голоса:', voices.map(v => `${v.name} (${v.lang})`));
+                        
+                        // Ищем лучшие русские голоса в порядке предпочтения
                         const preferredVoices = [
+                            // Google голоса (лучшее качество)
                             voices.find(voice => voice.name.toLowerCase().includes('google') && voice.lang.startsWith('ru')),
+                            // Microsoft голоса
                             voices.find(voice => voice.name.toLowerCase().includes('microsoft') && voice.lang.startsWith('ru')),
                             voices.find(voice => voice.name.toLowerCase().includes('irina') && voice.lang.startsWith('ru')),
                             voices.find(voice => voice.name.toLowerCase().includes('pavel') && voice.lang.startsWith('ru')),
+                            // Любой русский голос
                             voices.find(voice => voice.lang === 'ru-RU'),
                             voices.find(voice => voice.lang.startsWith('ru')),
+                            // Запасные варианты
                             voices.find(voice => voice.name.toLowerCase().includes('russian')),
                             voices.find(voice => voice.name.toLowerCase().includes('ru'))
                         ];
                         
+                        // Выбираем первый доступный голос
                         const selectedVoice = preferredVoices.find(voice => voice !== undefined);
-                        if (selectedVoice) utterance.voice = selectedVoice;
                         
+                        if (selectedVoice) {
+                            utterance.voice = selectedVoice;
+                            console.log('Используется голос:', selectedVoice.name, selectedVoice.lang);
+                        } else {
+                            console.log('Русский голос не найден, используется системный по умолчанию');
+                        }
+                        
+                        // Обработка ошибок
+                        utterance.onerror = (event) => {
+                            console.error('Ошибка синтеза речи:', event.error);
+                        };
+                        
+                        utterance.onend = () => {
+                            console.log('Воспроизведение завершено');
+                        };
+                        
+                        // Воспроизводим
                         try {
                             window.speechSynthesis.speak(utterance);
                         } catch (error) {
@@ -264,19 +593,27 @@
                         }
                     };
                     
+                    // Если голоса уже загружены
                     if (window.speechSynthesis.getVoices().length > 0) {
                         setVoice();
                     } else {
+                        // Ждем загрузки голосов
                         window.speechSynthesis.onvoiceschanged = () => {
                             setVoice();
-                            window.speechSynthesis.onvoiceschanged = null;
+                            window.speechSynthesis.onvoiceschanged = null; // Убираем обработчик
                         };
+                        
+                        // Таймаут на случай если голоса не загружаются
                         setTimeout(() => {
                             if (window.speechSynthesis.getVoices().length === 0) {
+                                console.log('Голоса не загрузились, используем по умолчанию');
                                 window.speechSynthesis.speak(utterance);
                             }
                         }, 1000);
                     }
+                } else {
+                    console.error('Синтез речи не поддерживается в этом браузере');
+                    alert('Ваш браузер не поддерживает воспроизведение речи');
                 }
             };
 
@@ -302,9 +639,11 @@
                     
                     recognition.onresult = (event) => {
                         const transcript = event.results[0][0].transcript.trim();
+                        console.log('Распознано:', transcript);
                         setUserAnswer(transcript);
                         setIsRecording(false);
                         
+                        // Автоматически проверяем ответ для заданий на аудирование
                         if (currentTask && currentTask.type === 'listening') {
                             setTimeout(() => {
                                 checkAnswer();
@@ -313,6 +652,7 @@
                     };
                     
                     recognition.onerror = (event) => {
+                        console.error('Ошибка распознавания:', event.error);
                         setIsRecording(false);
                         
                         let errorMessage = 'Ошибка распознавания речи. ';
@@ -342,6 +682,7 @@
                     recognition.start();
                     
                 } catch (error) {
+                    console.error('Ошибка запуска распознавания:', error);
                     setIsRecording(false);
                     setUserAnswer('Не удалось запустить распознавание речи');
                 }
@@ -349,6 +690,10 @@
 
             const stopRecording = () => {
                 setIsRecording(false);
+                if (window.currentRecognition) {
+                    window.currentRecognition.stop();
+                    window.currentRecognition = null;
+                }
             };
 
             useEffect(() => {
@@ -468,9 +813,9 @@
                     {Object.entries(vocabulary).map(([category, words]) => (
                         <div key={category} className="bg-white rounded-lg p-6 shadow-sm border">
                             <h3 className="text-xl font-semibold mb-4 text-blue-600">
-                                {category === 'ostavatsya' ? '🏠 Оставаться-остаться (to remain, to stay)' :
-                                 category === 'ostanavlivatsya' ? '⏸️ Останавливаться-остановиться (to stop)' : 
-                                 '✨ Становиться-стать (to become)'}
+                                {category === 'baby_care' ? '👶 Уход за ребёнком' :
+                                 category === 'family' ? '👨‍👩‍👧‍👦 Семья' : 
+                                 category === 'actions' ? '🤲 Действия' : '🏥 Здоровье'}
                             </h3>
                             <div className="grid gap-4">
                                 {Object.entries(words).map(([word, info]) => (
@@ -486,7 +831,7 @@
                                         </div>
                                         <p className="text-gray-600">{info.definition}</p>
                                         <div className="flex items-center gap-2 mt-2">
-                                            <p className="text-green-700 flex-1">{info.example}</p>
+                                            <p className="text-green-700 flex-1">"{info.example}"</p>
                                             <button
                                                 onClick={() => speakText(info.example.split(' (')[0])}
                                                 className="text-green-600 hover:text-green-800"
@@ -524,11 +869,11 @@
                 <div className="max-w-4xl mx-auto bg-gray-50 min-h-screen">
                     <div className="bg-blue-600 text-white p-6">
                         <h1 className="text-2xl font-bold flex items-center gap-2">
-                            <Book size={28} />
-                            Оставаться vs Останавливаться vs Становиться
+                            <Baby size={28} />
+                            Подготовка к общению с русскими родственниками
                         </h1>
                         <p className="mt-2 opacity-90">
-                            Учимся различать похожие русские глаголы
+                            Готовимся к приезду бабушки и дедушки из России
                         </p>
                         <div className="mt-4 flex gap-4 text-sm">
                             <span>Правильно: {score.correct}</span>
@@ -577,34 +922,44 @@
                                         Все категории
                                     </button>
                                     <button
-                                        onClick={() => setSelectedCategory('ostavatsya')}
+                                        onClick={() => setSelectedCategory('baby_care')}
                                         className={`px-4 py-2 rounded-lg ${
-                                            selectedCategory === 'ostavatsya' 
+                                            selectedCategory === 'baby_care' 
                                                 ? 'bg-blue-500 text-white' 
                                                 : 'bg-white border hover:bg-gray-50'
                                         }`}
                                     >
-                                        🏠 Оставаться-остаться
+                                        👶 Уход за ребёнком
                                     </button>
                                     <button
-                                        onClick={() => setSelectedCategory('ostanavlivatsya')}
+                                        onClick={() => setSelectedCategory('family')}
                                         className={`px-4 py-2 rounded-lg ${
-                                            selectedCategory === 'ostanavlivatsya' 
+                                            selectedCategory === 'family' 
                                                 ? 'bg-blue-500 text-white' 
                                                 : 'bg-white border hover:bg-gray-50'
                                         }`}
                                     >
-                                        ⏸️ Останавливаться-остановиться
+                                        👨‍👩‍👧‍👦 Семья
                                     </button>
                                     <button
-                                        onClick={() => setSelectedCategory('stanovitsya')}
+                                        onClick={() => setSelectedCategory('actions')}
                                         className={`px-4 py-2 rounded-lg ${
-                                            selectedCategory === 'stanovitsya' 
+                                            selectedCategory === 'actions' 
                                                 ? 'bg-blue-500 text-white' 
                                                 : 'bg-white border hover:bg-gray-50'
                                         }`}
                                     >
-                                        ✨ Становиться-стать
+                                        🤲 Действия
+                                    </button>
+                                    <button
+                                        onClick={() => setSelectedCategory('health')}
+                                        className={`px-4 py-2 rounded-lg ${
+                                            selectedCategory === 'health' 
+                                                ? 'bg-blue-500 text-white' 
+                                                : 'bg-white border hover:bg-gray-50'
+                                        }`}
+                                    >
+                                        🏥 Здоровье
                                     </button>
                                 </div>
 
@@ -670,7 +1025,7 @@
             );
         };
 
-        ReactDOM.render(React.createElement(RussianVerbsApp), document.getElementById('root'));
+        ReactDOM.render(React.createElement(RussianFamilyApp), document.getElementById('root'));
     </script>
 </body>
 </html>
